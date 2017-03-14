@@ -1,17 +1,19 @@
-# Latest LTS
-FROM node:boron
+FROM node:alpine
+
+MAINTAINER Ivan Font <ifont@redhat.com>
 
 # Create app directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
+# Clone game source code
+RUN git clone https://github.com/font/pacman.git .
+
 # Install app dependencies
-#COPY package.json /usr/src/app/
-#RUN npm install
+RUN npm install
 
-# Bundle app source
-#COPY . /usr/src/app
-VOLUME ["/usr/src/app"]
-
+# Expose port 8080
 EXPOSE 8080
-CMD [ "npm", "start" ]
+
+# Run container
+CMD ["npm", "start"]
