@@ -2,9 +2,12 @@
 
 var express = require('express');
 var path = require('path');
+var MongoClient = require('mongodb').MongoClient;
+var config = require('./routes/config');
+var assert = require('assert');
 
 // Constants
-var PORT = 8080;
+//var PORT = 8080;
 
 // Routes
 var highscores = require('./routes/highscores');
@@ -13,6 +16,11 @@ var zone = require('./routes/zone');
 // App
 var app = express();
 
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+// Handle root web server's public directory
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.use('/highscores', highscores);
@@ -28,7 +36,7 @@ app.use(function(req, res, next) {
 // Error Handler
 app.use(function(err, req, res, next) {
     if (res.headersSent) {
-      return next(err)
+        return next(err)
     }
     // set locals, only providing error in development
     res.locals.message = err.message;
@@ -39,5 +47,16 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
-app.listen(PORT);
-console.log('Running on http://localhost:' + PORT);
+MongoClient.connect(config.database.url, config.database.options,
+    function(err, db) {
+        if (err) {
+            console.log(err);
+        } else {
+            app.locals.db = db;
+            console.log('Connected to database server successfully');
+        }
+});
+
+module.exports = app;
+//app.listen(PORT);
+//console.log('Running on http://localhost:' + PORT);

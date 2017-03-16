@@ -1,16 +1,19 @@
 {
-  "name": "pacmanmp",
+  "name": "pacman",
   "version": "0.0.1",
-  "description": "Pac-Man Multi-Player Node.js on Docker",
+  "description": "Pac-Man Node.js Game",
   "author": "Ivan Font <ivan@ivanfont.com>",
-  "main": "server.js",
+  "main": "bin/server.js",
   "scripts": {
     "start": "node .",
     "dev": "nodemon ."
   },
   "license": "GPLv3",
   "dependencies": {
-    "express": "^4.14.1"
+    "body-parser": "^1.17.1",
+    "express": "^4.14.1",
+    "jade": "^1.11.0",
+    "mongodb": "^2.2.24"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
