@@ -11,21 +11,36 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 // middleware that is specific to this router
 router.use(function timeLog (req, res, next) {
-    console.log('Time: ', Date.now());
+    console.log('Time: ', Date());
     next();
 })
 
 router.get('/list', urlencodedParser, function(req, res, next) {
-    res.send('get highscore list');
-    console.log(req.body);
+    console.log('[get highscore list]');
+    const db = req.app.locals.db;
+
+    // Retrieve the top 10 high scores
+    var col = db.collection('highscore');
+    col.find({}).sort([['score', -1]]).limit(10).toArray(function(err, docs) {
+        var result = [];
+        if (err) {
+            console.log(err);
+        }
+
+        docs.forEach(function(item, index, array) {
+            result.push({ name: item['name'], zone: item['zone'],
+                          score: item['score'] });
+        });
+
+        res.json(result);
+    });
 });
 
 router.post('/add', urlencodedParser, function(req, res, next) {
-    console.log('post highscore add');
-    console.log(req.body);
-    console.log('host=%s user-agent=%s referer=%s',
-                req.headers.host, req.headers['user-agent'],
-                req.headers.referer);
+    console.log('[post highscore add] body =', req.body,
+                ' host =', req.headers.host,
+                ' user-agent =', req.headers['user-agent'],
+                ' referer =', req.headers.referer);
 
     var userScore = parseInt(req.body.score, 10),
         userLevel = parseInt(req.body.level, 10);
@@ -36,7 +51,7 @@ router.post('/add', urlencodedParser, function(req, res, next) {
             zone: req.body.zone,
             score: userScore,
             level: userLevel,
-            date: (new Date()).toString(),
+            date: Date(),
             referer: req.headers.referer,
             user_agent: req.headers['user-agent'],
             hostname: req.hostname,
