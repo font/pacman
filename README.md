@@ -1,5 +1,5 @@
-# pacmanmp
-Pac-Man Multi-Player
+# pacman
+Pac-Man
 
 ## Install dependencies
 
@@ -10,11 +10,11 @@ npm install
 ## Getting started
 
 ```
-node server.js
+npm run start
 ```
 
 ## Development
 
 ```
-nodemon server.js
+npm run dev
 ```
