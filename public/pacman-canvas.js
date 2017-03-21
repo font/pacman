@@ -128,25 +128,34 @@ function geronimo() {
 
     // stop watch to measure the time
     function Timer() {
-        this.time_diff = 0;
-        this.time_start = 0;
-        this.time_stop = 0;
+        this.timeStop = 0;
+        this.timeStart = 0;
+        this.elapsedTime = 0;
         this.start = function() {
-            this.time_start = new Date().getTime();
+            this.timeStart = new Date();
         }
         this.stop = function() {
-            this.time_stop = new Date().getTime();
-            this.time_diff += this.time_stop - this.time_start;
-            this.time_stop = 0;
-            this.time_start = 0;
+            this.timeStop = this.elapsedTime;
+        }
+        this.refresh = function(h) {
+            this.updateTime();
+            $(h).html("Timer: " + this.getElapsedTimeSecs());
         }
         this.reset = function() {
-            this.time_diff = 0;
-            this.time_start = 0;
-            this.time_stop = 0;
+            this.elapsedTime = 0;
+            this.timeStop = 0;
+            this.timeStart = new Date();
         }
-        this.get_time_diff = function() {
-            return this.time_diff;
+        this.resume = function() {
+            this.timeStart = new Date();
+        }
+        this.getElapsedTimeSecs = function() {
+            return parseInt(this.elapsedTime / 1000);
+        }
+        this.updateTime = function() {
+            if (!game.pause) {
+                this.elapsedTime = new Date() - this.timeStart + this.timeStop;
+            }
         }
     }
 
@@ -353,16 +362,17 @@ function geronimo() {
                 animationLoop();
             }
             else if (this.pause) {
-                // stop timer
-                this.timer.stop();
-
+                // resume timer
+                this.timer.resume();
                 this.pause = false;
                 this.closeMessage();
-                }
+            }
             else {
+                // pause timer
+                this.timer.stop();
                 this.showMessage("Pause","Click to Resume");
-                }
-            };
+            }
+        };
 
         this.init = function (state) {
 
@@ -405,7 +415,7 @@ function geronimo() {
                 game.level = 1;
                 this.refreshLevel(".level");
                 game.gameOver = false;
-                }
+            }
             pacman.reset();
 
             game.drawHearts(pacman.lives);
@@ -1422,6 +1432,9 @@ function checkAppCache() {
 
             // Refresh Score
             game.score.refresh(".score");
+
+            // Refresh Timer
+            game.timer.refresh(".timer");
 
             // Pills
             context.beginPath();

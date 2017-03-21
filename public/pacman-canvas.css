@@ -122,9 +122,10 @@ body, html { font-size: 15px; }
 div.audio {}
 audio {display: block; }
 
-.zone {}
+.zone { width: 300px; }
+.timer { width: 240px; float: right;}
 .score { width: 180px; }
-.score, .lives, .level { display: inline-block; }
+.score, .lives, .level, .zone, .timer { display: inline-block; }
 
 /* ---------- Controls ------------------------*/
 
