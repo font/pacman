@@ -206,7 +206,7 @@ function geronimo() {
         this.id = 0;
         this.sentUpdate = false;
 
-        this.checkUpdate = function() {
+        this.checkUpdateStats = function() {
             // Only send update once every time we hit databaseUpdateInterval
             if ((game.timer.getElapsedTimeSecs() % game.databaseUpdateInterval) == 0) {
                 if (!this.sentUpdate) {
@@ -1511,7 +1511,9 @@ function checkAppCache() {
             game.timer.refresh(".timer");
 
             // Check database update interval
-            game.user.checkUpdate();
+            if (game.user.getId()) {
+                game.user.checkUpdateStats();
+            }
 
             // Pills
             context.beginPath();
@@ -1615,11 +1617,8 @@ function checkAppCache() {
             // All dots collected?
             game.check();
 
-
             //requestAnimationFrame(animationLoop);
             setTimeout(animationLoop, game.refreshRate);
-
-
         }
 
 

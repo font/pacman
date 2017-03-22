@@ -17,10 +17,10 @@ router.get('/id', function(req, res, next) {
     console.log('[get user id]');
     const db = req.app.locals.db;
 
-    // Create and insert user ID
-    var userId = new ObjectId();
+    // Insert user ID and return back generated ObjectId
+    var userId = 0;
     db.collection('userstats').insertOne({
-        _id: userId
+        date: Date()
     }, {
        w: 'majority',
        j: true,
@@ -28,8 +28,8 @@ router.get('/id', function(req, res, next) {
     }, function(err, result) {
        if (err) {
            console.log('failed to insert new user ID err =', err);
-           userId = 0;
        } else {
+           userId = result.insertedId;
            console.log('Successfully inserted new user ID = ', userId);
        }
 
@@ -52,8 +52,7 @@ router.post('/stats', urlencodedParser, function(req, res, next) {
     const db = req.app.locals.db;
     db.collection('userstats').updateOne({
             _id: new ObjectId(req.body.userId),
-        }, {
-           $set: {
+        }, { $set: {
                 zone: req.body.zone,
                 score: userScore,
                 level: userLevel,
@@ -63,6 +62,8 @@ router.post('/stats', urlencodedParser, function(req, res, next) {
                 user_agent: req.headers['user-agent'],
                 hostname: req.hostname,
                 ip_addr: req.ip
+           }, $inc: {
+                updateCounter: 1
            }
         }, {
             w: 'majority',
