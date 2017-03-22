@@ -46,8 +46,9 @@ router.post('/stats', urlencodedParser, function(req, res, next) {
                 ' referer =', req.headers.referer);
 
     var userScore = parseInt(req.body.score, 10),
-        userLevel = parseInt(req.body.level, 10);
-        userLives = parseInt(req.body.lives, 10);
+        userLevel = parseInt(req.body.level, 10),
+        userLives = parseInt(req.body.lives, 10),
+        userET = parseInt(req.body.elapsedTime, 10);
 
     const db = req.app.locals.db;
     db.collection('userstats').updateOne({
@@ -57,6 +58,7 @@ router.post('/stats', urlencodedParser, function(req, res, next) {
                 score: userScore,
                 level: userLevel,
                 lives: userLives,
+                elapsedTime: userET,
                 date: Date(),
                 referer: req.headers.referer,
                 user_agent: req.headers['user-agent'],

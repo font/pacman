@@ -95,7 +95,7 @@ function geronimo() {
         });
     }
 
-    function ajaxUpdateUserStats(u, z, s, le, li) {
+    function ajaxUpdateUserStats(u, z, s, le, li, et) {
         $.ajax({
             type: "POST",
             datatype: "json",
@@ -105,7 +105,8 @@ function geronimo() {
                 zone: z,
                 score: s,
                 level: le,
-                lives: li
+                lives: li,
+                elapsedTime: et
             },
             success: function() {
                 console.log('Successfully updated user stats');
@@ -132,7 +133,7 @@ function geronimo() {
 
     function updateUserStats() {
         ajaxUpdateUserStats(game.user.getId(), game.zone, game.score.score,
-                            game.level, pacman.lives);
+                            game.level, pacman.lives, game.timer.getElapsedTimeSecs());
     }
 
     function buildWall(context,gridX,gridY,width,height) {
