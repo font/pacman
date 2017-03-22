@@ -29,6 +29,7 @@ function geronimo() {
     function getHighscore() {
         setTimeout(ajax_get,30);
     }
+
     function ajax_get() {
         var date = new Date().getTime();
         $.ajax({
@@ -48,6 +49,7 @@ function geronimo() {
            }
         });
     }
+
     function ajax_add(n, z, s, l) {
 
         $.ajax({
@@ -72,13 +74,45 @@ function geronimo() {
 
     function ajax_get_zone() {
         $.ajax({
-           datatype: "json",
-           type: "GET",
-           url: "zone/get",
-           success: function(msg){
-             $(".zone").append("<b>" + msg + "</b>");
-             game.zone = msg;
-           }
+            datatype: "json",
+            type: "GET",
+            url: "zone/get",
+            success: function(msg){
+                $(".zone").append("<b>" + msg + "</b>");
+                game.zone = msg;
+            }
+        });
+    }
+
+    function ajaxGetUserId() {
+        $.ajax({
+            datatype: "json",
+            type: "GET",
+            url: "user/id",
+            success: function(msg){
+                game.user.setId(msg);
+            }
+        });
+    }
+
+    function ajaxUpdateUserStats(u, z, s, le, li) {
+        $.ajax({
+            type: "POST",
+            datatype: "json",
+            url: "user/stats",
+            data: {
+                userId: u,
+                zone: z,
+                score: s,
+                level: le,
+                lives: li
+            },
+            success: function() {
+                console.log('Successfully updated user stats');
+            },
+            error: function(errorThrown) {
+                console.log(errorThrown);
+            }
         });
     }
 
@@ -88,8 +122,17 @@ function geronimo() {
         ajax_add(name, game.zone, game.score.score, game.level);
     }
 
+    function getUserId() {
+        setTimeout(ajaxGetUserId, 30);
+    }
+
     function getZone() {
         setTimeout(ajax_get_zone,30);
+    }
+
+    function updateUserStats() {
+        ajaxUpdateUserStats(game.user.getId(), game.zone, game.score.score,
+                            game.level, pacman.lives);
     }
 
     function buildWall(context,gridX,gridY,width,height) {
@@ -159,13 +202,41 @@ function geronimo() {
         }
     }
 
+    function User() {
+        this.id = 0;
+        this.sentUpdate = false;
+
+        this.checkUpdate = function() {
+            // Only send update once every time we hit 10 seconds
+            if ((game.timer.getElapsedTimeSecs() % game.databaseUpdateInterval) == 0) {
+                if (!this.sentUpdate) {
+                    // Update database
+                    updateUserStats();
+                    this.sentUpdate = true;
+                }
+            } else { // reset sentUpdate
+                this.sentUpdate = false;
+            }
+        }
+
+        this.getId = function() {
+            return this.id;
+        }
+
+        this.setId = function(id) {
+            this.id = id;
+        }
+    }
+
     // Manages the whole game ("God Object")
     function Game() {
         this.timer = new Timer();
         this.refreshRate = 33;        // speed of the game, will increase in higher levels
+        this.databaseUpdateInterval = 10; // in seconds
         this.running = false;
         this.pause = true;
         this.zone = '';
+        this.user = new User();
         this.score = new Score();
         this.soundfx = 0;
         this.map;
@@ -1287,6 +1358,9 @@ function checkAppCache() {
         // Show zone
         getZone();
 
+        // User ID
+        getUserId();
+
         if (window.applicationCache != null) checkAppCache();
 
         /* -------------------- EVENT LISTENERS -------------------------- */
@@ -1435,6 +1509,9 @@ function checkAppCache() {
 
             // Refresh Timer
             game.timer.refresh(".timer");
+
+            // Check database update interval
+            game.user.checkUpdate();
 
             // Pills
             context.beginPath();

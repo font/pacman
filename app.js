@@ -11,6 +11,7 @@ var assert = require('assert');
 
 // Routes
 var highscores = require('./routes/highscores');
+var user = require('./routes/user');
 var zone = require('./routes/zone');
 
 // App
@@ -24,6 +25,7 @@ app.set('view engine', 'jade');
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.use('/highscores', highscores);
+app.use('/user', user);
 app.use('/zone', zone);
 
 // Catch 404 and forward to error handler
