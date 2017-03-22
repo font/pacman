@@ -207,7 +207,7 @@ function geronimo() {
         this.sentUpdate = false;
 
         this.checkUpdate = function() {
-            // Only send update once every time we hit 10 seconds
+            // Only send update once every time we hit databaseUpdateInterval
             if ((game.timer.getElapsedTimeSecs() % game.databaseUpdateInterval) == 0) {
                 if (!this.sentUpdate) {
                     // Update database
@@ -424,9 +424,12 @@ function geronimo() {
 
         this.pauseResume = function () {
             if (!this.running) {
+                // Get and store user ID
+                // TODO: create user ID once per client (leave here) or once
+                // per game (put in game.init)?
+                getUserId();
                 // start timer
                 this.timer.start();
-
                 this.pause = false;
                 this.running = true;
                 this.closeMessage();
@@ -1358,9 +1361,6 @@ function checkAppCache() {
         // Show zone
         getZone();
 
-        // User ID
-        getUserId();
-
         if (window.applicationCache != null) checkAppCache();
 
         /* -------------------- EVENT LISTENERS -------------------------- */
@@ -1488,7 +1488,7 @@ function checkAppCache() {
 
 
 
-        /* --------------- GAME INITIALISATION ------------------------------------
+        /* --------------- GAME INITIALIZATION ------------------------------------
 
             TODO: put this into Game object and change code to accept different setups / levels
 
