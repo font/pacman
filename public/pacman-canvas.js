@@ -31,14 +31,10 @@ function geronimo() {
     }
 
     function ajax_get() {
-        var date = new Date().getTime();
         $.ajax({
            datatype: "json",
            type: "GET",
            url: "highscores/list",
-           data: {
-             timestamp: date,
-             },
            success: function(msg){
              $("#highscore-table tbody").text("");
              for (var i = 0; i < msg.length; i++) {
@@ -47,6 +43,25 @@ function geronimo() {
                 $("#highscore-table tbody").append("<tr><td id='rank'>" + rank + "</td><td id='playername'>" + msg[i]['name'] + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='score'>" + msg[i]['score'] + "</td></tr>");
              }
            }
+        });
+    }
+
+    function getLiveStats() {
+        setTimeout(ajaxGetLiveStats, 30);
+    }
+
+    function ajaxGetLiveStats() {
+        $.ajax({
+            datatype: "json",
+            type: "GET",
+            url: "user/stats",
+            success: function(msg) {
+                $("#livestats-table tbody").text("");
+                for (var i = 0; i < msg.length; i++) {
+                    var userId = i + 1;
+                    $("#livestats-table tbody").append("<tr><td id='userid'>" + userId + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='score'>" + msg[i]['score'] + "</td><td id='level'>" + msg[i]['level'] + "</td><td id='lives'>" + msg[i]['lives'] + "</td><td id='elapsedtime'>" + msg[i]['et'] + "</td><td id='txncount'>" + msg[i]['txncount'] + "</td></tr>");
+                }
+            }
         });
     }
 
@@ -1460,6 +1475,10 @@ function checkAppCache() {
         $(document).on('click','.button#highscore',function(event) {
             game.showContent('highscore-content');
             getHighscore();
+        });
+        $(document).on('click','.button#livestats',function(event) {
+            game.showContent('livestats-content');
+            getLiveStats();
         });
         $(document).on('click','.button#instructions',function(event) {
             game.showContent('instructions-content');

@@ -88,4 +88,31 @@ router.post('/stats', urlencodedParser, function(req, res, next) {
         });
 });
 
+router.get('/stats', function(req, res, next) {
+    console.log('[get userstats]');
+
+    const db = req.app.locals.db;
+    var col = db.collection('userstats');
+    col.find({}).sort([['_id', 1]]).toArray(function(err, docs) {
+        var result = [];
+        if (err) {
+            console.log(err);
+        }
+
+        docs.forEach(function(item, index, array) {
+            result.push({
+                            zone: item['zone'],
+                            score: item['score'],
+                            level: item['level'],
+                            lives: item['lives'],
+                            et: item['elapsedTime'],
+                            txncount: item['updateCounter']
+            });
+        });
+
+        res.json(result);
+    });
+});
+
+
 module.exports = router;

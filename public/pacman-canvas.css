@@ -78,10 +78,16 @@ tr:hover {
 }
 
 #highscore-table { width: 100%; }
+#livestats-table { width: 100%; }
 #rank {}
 #playername {}
 #zone {}
 #score {}
+#userid {}
+#level {}
+#lives {}
+#elapsedtime {}
+#txncount {}
 
 #myCanvas { border: none; display: block; background: rgb(0,0,0); width: 100%;  height: auto;}
 #canvas-container { position: relative;}
