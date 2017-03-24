@@ -61,6 +61,11 @@ function geronimo() {
                     var userId = i + 1;
                     $("#livestats-table tbody").append("<tr><td id='userid'>" + userId + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='score'>" + msg[i]['score'] + "</td><td id='level'>" + msg[i]['level'] + "</td><td id='lives'>" + msg[i]['lives'] + "</td><td id='elapsedtime'>" + msg[i]['et'] + "</td><td id='txncount'>" + msg[i]['txncount'] + "</td></tr>");
                 }
+
+                if (game.user.livestats) {
+                    // Schedule ourselves again while user is viewing livestats
+                    setTimeout(ajaxGetLiveStats, game.databaseUpdateInterval * 1000);
+                }
             }
         });
     }
@@ -105,7 +110,7 @@ function geronimo() {
             type: "GET",
             url: "user/id",
             success: function(msg){
-                game.user.setId(msg);
+                game.user.id = msg;
             }
         });
     }
@@ -147,7 +152,7 @@ function geronimo() {
     }
 
     function updateUserStats() {
-        ajaxUpdateUserStats(game.user.getId(), game.zone, game.score.score,
+        ajaxUpdateUserStats(game.user.id, game.zone, game.score.score,
                             game.level, pacman.lives, game.timer.getElapsedTimeSecs());
     }
 
@@ -221,10 +226,12 @@ function geronimo() {
     function User() {
         this.id = 0;
         this.sentUpdate = false;
+        this.livestats = false;
 
         this.checkUpdateStats = function() {
             // Only send update once every time we hit databaseUpdateInterval
-            if ((game.timer.getElapsedTimeSecs() % game.databaseUpdateInterval) == 0) {
+            var et = game.timer.getElapsedTimeSecs();
+            if (et && ((et % game.databaseUpdateInterval) == 0)) {
                 if (!this.sentUpdate) {
                     // Update database
                     updateUserStats();
@@ -233,14 +240,6 @@ function geronimo() {
             } else { // reset sentUpdate
                 this.sentUpdate = false;
             }
-        }
-
-        this.getId = function() {
-            return this.id;
-        }
-
-        this.setId = function(id) {
-            this.id = id;
         }
     }
 
@@ -1478,6 +1477,7 @@ function checkAppCache() {
         });
         $(document).on('click','.button#livestats',function(event) {
             game.showContent('livestats-content');
+            game.user.livestats = true;
             getLiveStats();
         });
         $(document).on('click','.button#instructions',function(event) {
@@ -1489,6 +1489,8 @@ function checkAppCache() {
         // back button
         $(document).on('click','.button#back',function(event) {
             game.showContent('game-content');
+            if (game.user.livestats)
+                game.user.livestats = false;
         });
         // toggleSound
         $(document).on('click','.controlSound',function(event) {
@@ -1531,7 +1533,7 @@ function checkAppCache() {
             game.timer.refresh(".timer");
 
             // Check database update interval
-            if (game.user.getId()) {
+            if (game.user.id) {
                 game.user.checkUpdateStats();
             }
 
