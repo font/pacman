@@ -93,7 +93,9 @@ router.get('/stats', function(req, res, next) {
 
     const db = req.app.locals.db;
     var col = db.collection('userstats');
-    col.find({}).sort([['_id', 1]]).toArray(function(err, docs) {
+    // Find all elements where the score field exists to avoid
+    // undefined values
+    col.find({ score: {$exists: true}}).sort([['_id', 1]]).toArray(function(err, docs) {
         var result = [];
         if (err) {
             console.log(err);
