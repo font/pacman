@@ -52,7 +52,7 @@ router.post('/add', urlencodedParser, function(req, res, next) {
 
     Database.getDb(req.app, function(err, db) {
         if (err) {
-            throw err;
+            return next(err);
         }
 
         // Insert high score with extra user data

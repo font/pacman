@@ -1,6 +1,7 @@
 var http = require('http');
 var express = require('express');
 var router = express.Router();
+var os = require('os');
 
 // middleware that is specific to this router
 router.use(function timeLog (req, res, next) {
@@ -8,7 +9,14 @@ router.use(function timeLog (req, res, next) {
     next();
 })
 
-router.get('/get', function(req, res, next) {
+router.get('/host/get', function(req, res, next) {
+    console.log('[get host]');
+    var host = os.hostname();
+    console.log(`HOST: ${host}`);
+    res.json(host);
+});
+
+router.get('/zone/get', function(req, res, next) {
     console.log('[get zone]');
 
     // Set options to retrieve GCE zone for instance
@@ -23,7 +31,7 @@ router.get('/get', function(req, res, next) {
         }
     };
 
-    var zone = 'UNKNOWN';
+    var zone = 'unknown';
 
     var req = http.request(options, (zoneRes) => {
         console.log(`STATUS: ${zoneRes.statusCode}`);
@@ -37,7 +45,7 @@ router.get('/get', function(req, res, next) {
             console.log('No more data in response.');
             // get the zone substring in uppercase
             var zoneSplit = zone.split('/');
-            zone = zoneSplit[zoneSplit.length - 1].toUpperCase();
+            zone = zoneSplit[zoneSplit.length - 1].toLowerCase();
             // respond with ZONE json data
             console.log(`ZONE: ${zone}`);
             res.json(zone);

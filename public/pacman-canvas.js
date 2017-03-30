@@ -92,13 +92,25 @@ function geronimo() {
         });
     }
 
-    function ajax_get_zone() {
+    function ajaxGetZone() {
         $.ajax({
             datatype: "json",
             type: "GET",
-            url: "zone/get",
+            url: "loc/zone/get",
             success: function(msg){
                 $(".zone").append("<b>" + msg + "</b>");
+                game.zone = msg;
+            }
+        });
+    }
+
+    function ajaxGetHost() {
+        $.ajax({
+            datatype: "json",
+            type: "GET",
+            url: "loc/host/get",
+            success: function(msg){
+                $(".host").append("<b>" + msg + "</b>");
                 game.zone = msg;
             }
         });
@@ -148,7 +160,11 @@ function geronimo() {
     }
 
     function getZone() {
-        setTimeout(ajax_get_zone,30);
+        setTimeout(ajaxGetZone,30);
+    }
+
+    function getHost() {
+        setTimeout(ajaxGetHost, 30);
     }
 
     function updateUserStats() {
@@ -251,6 +267,7 @@ function geronimo() {
         this.running = false;
         this.pause = true;
         this.zone = '';
+        this.host = '';
         this.user = new User();
         this.score = new Score();
         this.soundfx = 0;
@@ -1375,6 +1392,9 @@ function checkAppCache() {
 
         // Show zone
         getZone();
+
+        // Show host
+        getHost();
 
         if (window.applicationCache != null) checkAppCache();
 

@@ -131,9 +131,10 @@ div.audio {}
 audio {display: block; }
 
 .zone { width: 300px; }
+.host { width: 300px; }
 .timer { width: 240px; float: right;}
 .score { width: 180px; }
-.score, .lives, .level, .zone, .timer { display: inline-block; }
+.score, .lives, .level, .zone, .host, .timer { display: inline-block; }
 
 /* ---------- Controls ------------------------*/
 
