@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
+var Database = require('../lib/database');
 
 // create application/json parser
 //var jsonParser = bodyParser.json();
@@ -17,22 +18,26 @@ router.use(function timeLog (req, res, next) {
 
 router.get('/list', urlencodedParser, function(req, res, next) {
     console.log('[get highscore list]');
-    const db = req.app.locals.db;
-
-    // Retrieve the top 10 high scores
-    var col = db.collection('highscore');
-    col.find({}).sort([['score', -1]]).limit(10).toArray(function(err, docs) {
-        var result = [];
+    Database.getDb(req.app, function(err, db) {
         if (err) {
-            console.log(err);
+            return next(err);
         }
 
-        docs.forEach(function(item, index, array) {
-            result.push({ name: item['name'], zone: item['zone'],
-                          score: item['score'] });
-        });
+        // Retrieve the top 10 high scores
+        var col = db.collection('highscore');
+        col.find({}).sort([['score', -1]]).limit(10).toArray(function(err, docs) {
+            var result = [];
+            if (err) {
+                console.log(err);
+            }
 
-        res.json(result);
+            docs.forEach(function(item, index, array) {
+                result.push({ name: item['name'], zone: item['zone'],
+                              score: item['score'] });
+            });
+
+            res.json(result);
+        });
     });
 });
 
@@ -45,40 +50,46 @@ router.post('/add', urlencodedParser, function(req, res, next) {
     var userScore = parseInt(req.body.score, 10),
         userLevel = parseInt(req.body.level, 10);
 
-    const db = req.app.locals.db;
-    db.collection('highscore').insertOne({
-            name: req.body.name,
-            zone: req.body.zone,
-            score: userScore,
-            level: userLevel,
-            date: Date(),
-            referer: req.headers.referer,
-            user_agent: req.headers['user-agent'],
-            hostname: req.hostname,
-            ip_addr: req.ip
-        }, {
-            w: 'majority',
-            j: true,
-            wtimeout: 10000
-        }, function(err, result) {
-            var returnStatus = '';
+    Database.getDb(req.app, function(err, db) {
+        if (err) {
+            throw err;
+        }
 
-            if (err) {
-                console.log(err);
-                returnStatus = 'error';
-            } else {
-                console.log('Successfully inserted highscore');
-                returnStatus = 'success';
-            }
-
-            res.json({
+        // Insert high score with extra user data
+        db.collection('highscore').insertOne({
                 name: req.body.name,
                 zone: req.body.zone,
                 score: userScore,
                 level: userLevel,
-                rs: returnStatus
+                date: Date(),
+                referer: req.headers.referer,
+                user_agent: req.headers['user-agent'],
+                hostname: req.hostname,
+                ip_addr: req.ip
+            }, {
+                w: 'majority',
+                j: true,
+                wtimeout: 10000
+            }, function(err, result) {
+                var returnStatus = '';
+
+                if (err) {
+                    console.log(err);
+                    returnStatus = 'error';
+                } else {
+                    console.log('Successfully inserted highscore');
+                    returnStatus = 'success';
+                }
+
+                res.json({
+                    name: req.body.name,
+                    zone: req.body.zone,
+                    score: userScore,
+                    level: userLevel,
+                    rs: returnStatus
+                });
             });
-        });
+    });
 });
 
 module.exports = router;

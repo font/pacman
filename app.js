@@ -49,7 +49,7 @@ app.use(function(err, req, res, next) {
 
 Database.connect(app, function(err) {
     if (err) {
-        console.log(err);
+        console.log('Failed to connect to database server');
     } else {
         console.log('Connected to database server successfully');
     }
