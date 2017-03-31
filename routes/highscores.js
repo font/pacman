@@ -32,7 +32,8 @@ router.get('/list', urlencodedParser, function(req, res, next) {
             }
 
             docs.forEach(function(item, index, array) {
-                result.push({ name: item['name'], zone: item['zone'],
+                result.push({ name: item['name'], cloud: item['cloud'],
+                              zone: item['zone'], host: item['host'],
                               score: item['score'] });
             });
 
@@ -58,7 +59,9 @@ router.post('/add', urlencodedParser, function(req, res, next) {
         // Insert high score with extra user data
         db.collection('highscore').insertOne({
                 name: req.body.name,
+                cloud: req.body.cloud,
                 zone: req.body.zone,
+                host: req.body.host,
                 score: userScore,
                 level: userLevel,
                 date: Date(),

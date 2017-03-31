@@ -40,7 +40,7 @@ function geronimo() {
              for (var i = 0; i < msg.length; i++) {
                 var rank = i + 1;
                 // Can we make this shorter?
-                $("#highscore-table tbody").append("<tr><td id='rank'>" + rank + "</td><td id='playername'>" + msg[i]['name'] + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='score'>" + msg[i]['score'] + "</td></tr>");
+                $("#highscore-table tbody").append("<tr><td id='rank'>" + rank + "</td><td id='playername'>" + msg[i]['name'] + "</td><td id='cloudprovider'>" + msg[i]['cloud'] + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='host'>" + msg[i]['host'] + "</td><td id='score'>" + msg[i]['score'] + "</td></tr>");
              }
            }
         });
@@ -70,14 +70,16 @@ function geronimo() {
         });
     }
 
-    function ajax_add(n, z, s, l) {
+    function ajaxAdd(n, c, z, h, s, l) {
 
         $.ajax({
            type: 'POST',
            url: 'highscores/add',
            data: {
              name: n,
+             cloud: c,
              zone: z,
+             host: h,
              score: s,
              level: l
              },
@@ -99,11 +101,11 @@ function geronimo() {
             url: "loc/metadata/get",
             success: function(msg){
                 $(".cloudprovider").append("<b>" + msg['cloud'] + "</b>");
-                game.cloudProvider = msg;
+                game.cloudProvider = msg['cloud'];
                 $(".zone").append("<b>" + msg['zone'] + "</b>");
-                game.zone = msg;
+                game.zone = msg['zone'];
                 $(".host").append("<b>" + msg['host'] + "</b>");
-                game.host = msg;
+                game.host = msg['host'];
             },
             error: function() {
                 $(".cloudprovider").append("<b>unknown</b>");
@@ -188,7 +190,8 @@ function geronimo() {
     function addHighscore() {
         var name = $("input[type=text]").val();
         $("#highscore-form").html("Saving highscore...");
-        ajax_add(name, game.zone, game.score.score, game.level);
+        ajaxAdd(name, game.cloudProvider, game.zone, game.host,
+                 game.score.score, game.level);
     }
 
     function getUserId() {
