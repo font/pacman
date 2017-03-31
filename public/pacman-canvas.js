@@ -59,7 +59,7 @@ function geronimo() {
                 $("#livestats-table tbody").text("");
                 for (var i = 0; i < msg.length; i++) {
                     var userId = i + 1;
-                    $("#livestats-table tbody").append("<tr><td id='userid'>" + userId + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='score'>" + msg[i]['score'] + "</td><td id='level'>" + msg[i]['level'] + "</td><td id='lives'>" + msg[i]['lives'] + "</td><td id='elapsedtime'>" + msg[i]['et'] + "</td><td id='txncount'>" + msg[i]['txncount'] + "</td></tr>");
+                    $("#livestats-table tbody").append("<tr><td id='userid'>" + userId + "</td><td id='cloudprovider'>" + msg[i]['cloud'] + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='host'>" + msg[i]['host'] + "</td><td id='score'>" + msg[i]['score'] + "</td><td id='level'>" + msg[i]['level'] + "</td><td id='lives'>" + msg[i]['lives'] + "</td><td id='elapsedtime'>" + msg[i]['et'] + "</td><td id='txncount'>" + msg[i]['txncount'] + "</td></tr>");
                 }
 
                 if (game.user.livestats) {
@@ -166,14 +166,16 @@ function geronimo() {
         });
     }
 
-    function ajaxUpdateUserStats(u, z, s, le, li, et) {
+    function ajaxUpdateUserStats(u, c, z, h, s, le, li, et) {
         $.ajax({
             type: "POST",
             datatype: "json",
             url: "user/stats",
             data: {
                 userId: u,
+                cloud: c,
                 zone: z,
+                host: h,
                 score: s,
                 level: le,
                 lives: li,
@@ -216,8 +218,9 @@ function geronimo() {
     }
 
     function updateUserStats() {
-        ajaxUpdateUserStats(game.user.id, game.zone, game.score.score,
-                            game.level, pacman.lives, game.timer.getElapsedTimeSecs());
+        ajaxUpdateUserStats(game.user.id, game.cloudProvider, game.zone, game.host,
+                            game.score.score, game.level, pacman.lives,
+                            game.timer.getElapsedTimeSecs());
     }
 
     function buildWall(context,gridX,gridY,width,height) {

@@ -64,7 +64,9 @@ router.post('/stats', urlencodedParser, function(req, res, next) {
         db.collection('userstats').updateOne({
                 _id: new ObjectId(req.body.userId),
             }, { $set: {
+                    cloud: req.body.cloud,
                     zone: req.body.zone,
+                    host: req.body.host,
                     score: userScore,
                     level: userLevel,
                     lives: userLives,
@@ -118,7 +120,9 @@ router.get('/stats', function(req, res, next) {
 
             docs.forEach(function(item, index, array) {
                 result.push({
+                                cloud: item['cloud'],
                                 zone: item['zone'],
+                                host: item['host'],
                                 score: item['score'],
                                 level: item['level'],
                                 lives: item['lives'],

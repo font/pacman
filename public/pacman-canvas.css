@@ -79,7 +79,7 @@ tr:hover {
 
 #highscore-content { max-width: 800px; }
 #highscore-table { width: 100%; text-align: center;}
-#livestats-content { max-width: 800px; }
+#livestats-content { max-width: 900px; }
 #livestats-table { width: 100%; text-align: center;}
 #rank {}
 #playername {}
@@ -118,7 +118,7 @@ tr:hover {
 }
 
 .canvas { position:absolute; padding-top: 20px;}
-.main {width: 100%; max-width: 760px; margin: 10px auto; position: static; left: auto;}
+.main {margin: 10px auto; position: static; left: auto;}
 .content { width: 100%; max-width: 640px; text-align: left; margin: 0;}
 .container {text-align: center; margin:0; padding: 0;}
 .wrapper { padding:0;}
