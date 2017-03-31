@@ -92,6 +92,42 @@ function geronimo() {
         });
     }
 
+    function ajaxGetCloudMetadata() {
+        $.ajax({
+            datatype: "json",
+            type: "GET",
+            url: "loc/metadata/get",
+            success: function(msg){
+                $(".cloudprovider").append("<b>" + msg['cloud'] + "</b>");
+                game.cloudProvider = msg;
+                $(".zone").append("<b>" + msg['zone'] + "</b>");
+                game.zone = msg;
+                $(".host").append("<b>" + msg['host'] + "</b>");
+                game.host = msg;
+            },
+            error: function() {
+                $(".cloudprovider").append("<b>unknown</b>");
+                game.cloudProvider = 'unknown';
+                $(".zone").append("<b>unknown</b>");
+                game.zone = 'unknown';
+                $(".host").append("<b>unknown</b>");
+                game.host = 'unknown';
+            }
+        });
+    }
+
+    function ajaxGetCloudProvider() {
+        $.ajax({
+            datatype: "json",
+            type: "GET",
+            url: "loc/cloudprovider/get",
+            success: function(msg){
+                $(".cloudprovider").append("<b>" + msg + "</b>");
+                game.zone = msg;
+            }
+        });
+    }
+
     function ajaxGetZone() {
         $.ajax({
             datatype: "json",
@@ -157,6 +193,14 @@ function geronimo() {
 
     function getUserId() {
         setTimeout(ajaxGetUserId, 30);
+    }
+
+    function getCloudMetadata() {
+        setTimeout(ajaxGetCloudMetadata, 30);
+    }
+
+    function getCloudProvider() {
+        setTimeout(ajaxGetCloudProvider, 30);
     }
 
     function getZone() {
@@ -266,6 +310,7 @@ function geronimo() {
         this.databaseUpdateInterval = 10; // in seconds
         this.running = false;
         this.pause = true;
+        this.cloudProvider = '';
         this.zone = '';
         this.host = '';
         this.user = new User();
@@ -1390,11 +1435,8 @@ function checkAppCache() {
         // Hide address bar
         hideAdressbar();
 
-        // Show zone
-        getZone();
-
-        // Show host
-        getHost();
+        // Get and show cloud location metadata
+        getCloudMetadata();
 
         if (window.applicationCache != null) checkAppCache();
 

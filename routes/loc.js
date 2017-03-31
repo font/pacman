@@ -9,6 +9,149 @@ router.use(function timeLog (req, res, next) {
     next();
 })
 
+router.get('/metadata/get', function(req, res, next) {
+    console.log('[get location metadata]');
+    var h = getHost();
+    getCloudMetadata(function(c, z) {
+        console.log(`CLOUD: ${c}`);
+        console.log(`ZONE: ${z}`);
+        console.log(`HOST: ${h}`);
+        res.json({
+            cloud: c,
+            zone: z,
+            host: h
+        });
+    });
+});
+
+function getCloudMetadata(callback) {
+    console.log('getCloudMetadata');
+    // Try GCP first
+    getGCPCloudMetadata(function(err, c, z) {
+        if (err) {
+            // Try AWS next
+            getAWSCloudMetadata(function(err, c, z) {
+                // Return result regardless of error
+                callback(c, z); // Running in AWS or unknown
+            });
+        } else {
+            callback(c, z); // Running in GCP
+        }
+    });
+
+}
+
+function getGCPCloudMetadata(callback) {
+    console.log('getGCPCloudMetadata');
+    // Set options to retrieve GCE zone for instance
+    var gcpOptions = {
+        hostname: 'metadata.google.internal',
+        port: 80,
+        path: '/computeMetadata/v1/instance/zone',
+        method: 'GET',
+        timeout: 10000,
+        headers: {
+          'Metadata-Flavor': 'Google'
+        }
+    };
+
+    var cloudName = 'unknown',
+        zone = 'unknown';
+
+    var req = http.request(gcpOptions, (zoneRes) => {
+        console.log(`STATUS: ${zoneRes.statusCode}`);
+        console.log(`HEADERS: ${JSON.stringify(zoneRes.headers)}`);
+        zoneRes.setEncoding('utf8');
+        zoneRes.on('data', (chunk) => {
+            console.log(`BODY: ${chunk}`);
+            zone = chunk;
+        });
+        zoneRes.on('end', () => {
+            console.log('No more data in response.');
+            cloudName = 'GCP'; // Request was successful
+
+            // get the zone substring in uppercase
+            var zoneSplit = zone.split('/');
+            zone = zoneSplit[zoneSplit.length - 1].toLowerCase();
+            console.log(`CLOUD: ${cloudName}`);
+            console.log(`ZONE: ${zone}`);
+
+            // return CLOUD and ZONE data
+            callback(null, cloudName, zone);
+        });
+    });
+
+    req.on('error', (e) => {
+        console.log(`problem with request: ${e.message}`);
+        // return CLOUD and ZONE data
+        callback(e, cloudName, zone);
+    });
+
+    // End request
+    req.end();
+}
+
+function getAWSCloudMetadata(callback) {
+    console.log('getAWSCloudMetadata');
+    // Set options to retrieve AWS zone for instance
+    var awsOptions = {
+        hostname: '169.254.169.254',
+        port: 80,
+        path: 'latest/meta-data/placement/availability-zone',
+        method: 'GET',
+        timeout: 10000,
+    };
+
+    var cloudName = 'unknown',
+        zone = 'unknown';
+
+    var req = http.request(awsOptions, (zoneRes) => {
+        console.log(`STATUS: ${zoneRes.statusCode}`);
+        console.log(`HEADERS: ${JSON.stringify(zoneRes.headers)}`);
+        zoneRes.setEncoding('utf8');
+        zoneRes.on('data', (chunk) => {
+            console.log(`BODY: ${chunk}`);
+            zone = chunk;
+        });
+        zoneRes.on('end', () => {
+            console.log('No more data in response.');
+            cloudName = 'AWS'; // Request was successful
+
+            // get the zone substring in uppercase
+            var zoneSplit = zone.split('/');
+            zone = zoneSplit[zoneSplit.length - 1].toLowerCase();
+            console.log(`CLOUD: ${cloudName}`);
+            console.log(`ZONE: ${zone}`);
+
+            // return CLOUD and ZONE data
+            callback(null, cloudName, zone);
+        });
+    });
+
+    req.on('error', (e) => {
+        console.log(`problem with request: ${e.message}`);
+        // return CLOUD and ZONE data
+        callback(e, cloudName, zone);
+    });
+
+    // End request
+    req.end();
+}
+
+function getHost() {
+    console.log('[get host]');
+    var host = os.hostname();
+    console.log(`HOST: ${host}`);
+    return host;
+}
+
+router.get('/cloudprovider/get', function(req, res, next) {
+    console.log('[get cloudprovider]');
+    var cloud = 'unknown';
+    console.log(`CLOUD PROVIDER: ${cloud}`);
+    res.json(cloud);
+});
+
 router.get('/host/get', function(req, res, next) {
     console.log('[get host]');
     var host = os.hostname();

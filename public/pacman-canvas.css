@@ -130,11 +130,12 @@ body, html { font-size: 15px; }
 div.audio {}
 audio {display: block; }
 
+.cloudprovider { width: 300px; }
 .zone { width: 300px; }
 .host { width: 300px; }
 .timer { width: 240px; float: right;}
 .score { width: 180px; }
-.score, .lives, .level, .zone, .host, .timer { display: inline-block; }
+.score, .lives, .level, .cloudprovider, .zone, .host, .timer { display: inline-block; }
 
 /* ---------- Controls ------------------------*/
 
