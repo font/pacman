@@ -31,8 +31,15 @@ function getCloudMetadata(callback) {
         if (err) {
             // Try AWS next
             getAWSCloudMetadata(function(err, c, z) {
-                // Return result regardless of error
-                callback(c, z); // Running in AWS or unknown
+                if (err) {
+                    // Try Azure next
+                    getAzureCloudMetadata(function(err, c, z) {
+                        // Return result regardless of error
+                        callback(c, z); // Running in Azure or unknown
+                    });
+                } else {
+                    callback(c, z); // Running in AWS
+                }
             });
         } else {
             callback(c, z); // Running in GCP
@@ -97,7 +104,7 @@ function getAWSCloudMetadata(callback) {
     var awsOptions = {
         hostname: '169.254.169.254',
         port: 80,
-        path: 'latest/meta-data/placement/availability-zone',
+        path: '/latest/meta-data/placement/availability-zone',
         method: 'GET',
         timeout: 10000,
     };
@@ -116,6 +123,56 @@ function getAWSCloudMetadata(callback) {
         zoneRes.on('end', () => {
             console.log('No more data in response.');
             cloudName = 'AWS'; // Request was successful
+
+            // get the zone substring in uppercase
+            var zoneSplit = zone.split('/');
+            zone = zoneSplit[zoneSplit.length - 1].toLowerCase();
+            console.log(`CLOUD: ${cloudName}`);
+            console.log(`ZONE: ${zone}`);
+
+            // return CLOUD and ZONE data
+            callback(null, cloudName, zone);
+        });
+    });
+
+    req.on('error', (e) => {
+        console.log(`problem with request: ${e.message}`);
+        // return CLOUD and ZONE data
+        callback(e, cloudName, zone);
+    });
+
+    // End request
+    req.end();
+}
+
+function getAzureCloudMetadata(callback) {
+    console.log('getAzureCloudMetadata');
+    // Set options to retrieve Azure zone for instance
+    var azureOptions = {
+        hostname: '169.254.169.254',
+        port: 80,
+        path: '/metadata/latest/instance/compute/location',
+        method: 'GET',
+        timeout: 10000,
+        headers: {
+          'Metadata': 'true'
+        }
+    };
+
+    var cloudName = 'unknown',
+        zone = 'unknown';
+
+    var req = http.request(azureOptions, (zoneRes) => {
+        console.log(`STATUS: ${zoneRes.statusCode}`);
+        console.log(`HEADERS: ${JSON.stringify(zoneRes.headers)}`);
+        zoneRes.setEncoding('utf8');
+        zoneRes.on('data', (chunk) => {
+            console.log(`BODY: ${chunk}`);
+            zone = chunk;
+        });
+        zoneRes.on('end', () => {
+            console.log('No more data in response.');
+            cloudName = 'Azure'; // Request was successful
 
             // get the zone substring in uppercase
             var zoneSplit = zone.split('/');
