@@ -118,6 +118,12 @@ function getAWSCloudMetadata(callback) {
         zoneRes.setEncoding('utf8');
         zoneRes.on('data', (chunk) => {
             console.log(`BODY: ${chunk}`);
+
+            if (chunk.includes('STATUS: 404')) {
+                console.log('problem with request: 404 error');
+                callback(new Error('404 status error'), cloudName, zone);
+            }
+
             zone = chunk;
         });
         zoneRes.on('end', () => {
