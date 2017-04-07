@@ -66,13 +66,29 @@ function getGCPCloudMetadata(callback) {
         zone = 'unknown';
 
     var req = http.request(gcpOptions, (zoneRes) => {
+        let error;
+
+        if (zoneRes.statusCode !== 200) {
+            error = new Error(`Request Failed.\n` +
+                              `Status Code: ${zoneRes.statusCode}`);
+        }
+
+        if (error) {
+            console.log(error.message);
+            // consume response data to free up memory
+            zoneRes.resume();
+            callback(error, cloudName, zone);
+        }
+
         console.log(`STATUS: ${zoneRes.statusCode}`);
         console.log(`HEADERS: ${JSON.stringify(zoneRes.headers)}`);
         zoneRes.setEncoding('utf8');
+
         zoneRes.on('data', (chunk) => {
             console.log(`BODY: ${chunk}`);
             zone = chunk;
         });
+
         zoneRes.on('end', () => {
             console.log('No more data in response.');
             cloudName = 'GCP'; // Request was successful
@@ -86,6 +102,7 @@ function getGCPCloudMetadata(callback) {
             // return CLOUD and ZONE data
             callback(null, cloudName, zone);
         });
+
     });
 
     req.on('error', (e) => {
@@ -113,19 +130,29 @@ function getAWSCloudMetadata(callback) {
         zone = 'unknown';
 
     var req = http.request(awsOptions, (zoneRes) => {
+        let error;
+
+        if (zoneRes.statusCode !== 200) {
+            error = new Error(`Request Failed.\n` +
+                              `Status Code: ${zoneRes.statusCode}`);
+        }
+
+        if (error) {
+            console.log(error.message);
+            // consume response data to free up memory
+            zoneRes.resume();
+            callback(error, cloudName, zone);
+        }
+
         console.log(`STATUS: ${zoneRes.statusCode}`);
         console.log(`HEADERS: ${JSON.stringify(zoneRes.headers)}`);
         zoneRes.setEncoding('utf8');
+
         zoneRes.on('data', (chunk) => {
             console.log(`BODY: ${chunk}`);
-
-            if (chunk.includes('STATUS: 404')) {
-                console.log('problem with request: 404 error');
-                callback(new Error('404 status error'), cloudName, zone);
-            }
-
             zone = chunk;
         });
+
         zoneRes.on('end', () => {
             console.log('No more data in response.');
             cloudName = 'AWS'; // Request was successful
@@ -139,6 +166,7 @@ function getAWSCloudMetadata(callback) {
             // return CLOUD and ZONE data
             callback(null, cloudName, zone);
         });
+
     });
 
     req.on('error', (e) => {
@@ -169,13 +197,29 @@ function getAzureCloudMetadata(callback) {
         zone = 'unknown';
 
     var req = http.request(azureOptions, (zoneRes) => {
+        let error;
+
+        if (zoneRes.statusCode !== 200) {
+            error = new Error(`Request Failed.\n` +
+                              `Status Code: ${zoneRes.statusCode}`);
+        }
+
+        if (error) {
+            console.log(error.message);
+            // consume response data to free up memory
+            zoneRes.resume();
+            callback(error, cloudName, zone);
+        }
+
         console.log(`STATUS: ${zoneRes.statusCode}`);
         console.log(`HEADERS: ${JSON.stringify(zoneRes.headers)}`);
         zoneRes.setEncoding('utf8');
+
         zoneRes.on('data', (chunk) => {
             console.log(`BODY: ${chunk}`);
             zone = chunk;
         });
+
         zoneRes.on('end', () => {
             console.log('No more data in response.');
             cloudName = 'Azure'; // Request was successful
@@ -189,6 +233,7 @@ function getAzureCloudMetadata(callback) {
             // return CLOUD and ZONE data
             callback(null, cloudName, zone);
         });
+
     });
 
     req.on('error', (e) => {
