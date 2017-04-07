@@ -78,6 +78,7 @@ function getGCPCloudMetadata(callback) {
             // consume response data to free up memory
             zoneRes.resume();
             callback(error, cloudName, zone);
+            return;
         }
 
         console.log(`STATUS: ${zoneRes.statusCode}`);
@@ -142,6 +143,7 @@ function getAWSCloudMetadata(callback) {
             // consume response data to free up memory
             zoneRes.resume();
             callback(error, cloudName, zone);
+            return;
         }
 
         console.log(`STATUS: ${zoneRes.statusCode}`);
@@ -209,6 +211,7 @@ function getAzureCloudMetadata(callback) {
             // consume response data to free up memory
             zoneRes.resume();
             callback(error, cloudName, zone);
+            return;
         }
 
         console.log(`STATUS: ${zoneRes.statusCode}`);
