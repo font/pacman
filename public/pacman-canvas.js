@@ -99,7 +99,7 @@ function geronimo() {
             datatype: "json",
             type: "GET",
             url: "loc/metadata/get",
-            timeout: 10000, // wait no more than 10 seconds
+            timeout: 30000, // wait no more than 30 seconds
             success: function(msg){
                 $(".cloudprovider").append("<b>" + msg['cloud'] + "</b>");
                 game.cloudProvider = msg['cloud'];
