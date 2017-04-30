@@ -26,23 +26,23 @@ router.get('/metadata/get', function(req, res, next) {
 
 function getCloudMetadata(callback) {
     console.log('getCloudMetadata');
-    // Try GCP first
-    getGCPCloudMetadata(function(err, c, z) {
+    // Try AWS first
+    getAWSCloudMetadata(function(err, c, z) {
         if (err) {
-            // Try AWS next
-            getAWSCloudMetadata(function(err, c, z) {
+            // Try Azure next
+            getAzureCloudMetadata(function(err, c, z) {
                 if (err) {
-                    // Try Azure next
-                    getAzureCloudMetadata(function(err, c, z) {
+                    // Try GCP next
+                    getGCPCloudMetadata(function(err, c, z) {
                         // Return result regardless of error
-                        callback(c, z); // Running in Azure or unknown
+                        callback(c, z); // Running in GCP or unknown
                     });
                 } else {
-                    callback(c, z); // Running in AWS
+                    callback(c, z); // Running in Azure
                 }
             });
         } else {
-            callback(c, z); // Running in GCP
+            callback(c, z); // Running in AWS
         }
     });
 
