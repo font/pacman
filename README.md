@@ -18,3 +18,9 @@ npm run start
 ```
 npm run dev
 ```
+
+## Building using an s2i image
+
+```
+s2i build . centos/nodejs-6-centos7 pacman
+```
