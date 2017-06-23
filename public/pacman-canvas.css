@@ -132,12 +132,12 @@ body, html { font-size: 15px; }
 div.audio {}
 audio {display: block; }
 
-.cloudprovider { width: 300px; }
-.zone { width: 300px; }
-.host { width: 300px; }
-.timer { width: 240px; float: right;}
-.score { width: 180px; }
-.score, .lives, .level, .cloudprovider, .zone, .host, .timer { display: inline-block; }
+.cloudprovider { width: inherit; }
+.zone { width: inherit; }
+.host { width: inherit; }
+.time { width: 320px; }
+.score { width: 290px; }
+.score, .lives, .level, .cloudprovider, .zone, .host, .time { display: inline-block; }
 
 /* ---------- Controls ------------------------*/
 
