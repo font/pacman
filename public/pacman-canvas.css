@@ -135,7 +135,7 @@ audio {display: block; }
 .cloudprovider { width: inherit; }
 .zone { width: inherit; }
 .host { width: inherit; }
-.time { width: 320px; }
+.time { width: 290px; }
 .score { width: 290px; }
 .score, .lives, .level, .cloudprovider, .zone, .host, .time { display: inline-block; }
 

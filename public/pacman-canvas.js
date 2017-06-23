@@ -328,7 +328,7 @@ function geronimo() {
         this.monsters;
         this.level = 1;
         this.refreshLevel = function(h) {
-            $(h).html("Lvl: "+this.level);
+            $(h).html("Level: "+this.level);
         };
         this.gameOver = false;
         this.canvas = $("#myCanvas").get(0);
