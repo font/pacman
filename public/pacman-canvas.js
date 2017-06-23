@@ -270,7 +270,7 @@ function geronimo() {
         }
         this.refresh = function(h) {
             this.updateTime();
-            $(h).html("Timer: " + this.getElapsedTimeSecs());
+            $(h).html("Time: " + this.getElapsedTimeSecs());
         }
         this.reset = function() {
             this.elapsedTime = 0;
@@ -1599,7 +1599,7 @@ function checkAppCache() {
             game.score.refresh(".score");
 
             // Refresh Timer
-            game.timer.refresh(".timer");
+            game.timer.refresh(".time");
 
             // Check database update interval
             if (game.user.id) {
