@@ -187,7 +187,7 @@ function getAzureCloudMetadata(callback) {
     var azureOptions = {
         hostname: '169.254.169.254',
         port: 80,
-        path: '/metadata/instance/compute/location?api-version=2017-03-01&format=text',
+        path: '/metadata/instance/compute/location?api-version=2017-04-02&format=text',
         method: 'GET',
         timeout: 10000,
         headers: {
