@@ -98,7 +98,7 @@ function geronimo() {
         $.ajax({
             datatype: "json",
             type: "GET",
-            url: "loc/metadata/get",
+            url: "loc/metadata",
             timeout: 30000, // wait no more than 30 seconds
             success: function(msg){
                 $(".cloudprovider").append("<b>" + msg['cloud'] + "</b>");
@@ -989,7 +989,7 @@ function geronimo() {
             }
 
 
-            var oppDir = this.getOppositeDirection();    // ghosts are not allowed to change direction 180°
+            var oppDir = this.getOppositeDirection();    // ghosts are not allowed to change direction 180Â°
 
             var dirs = [{},{},{},{}];
             dirs[0].field = game.getMapContent(pX,pY-1);
