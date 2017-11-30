@@ -10,7 +10,7 @@ router.use(function timeLog (req, res, next) {
 })
 
 router.get('/metadata', function(req, res, next) {
-    console.log('[GET location metadata]');
+    console.log('[GET /loc/metadata]');
     var h = getHost();
     getCloudMetadata(function(c, z) {
         console.log(`CLOUD: ${c}`);

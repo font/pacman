@@ -74,7 +74,7 @@ function geronimo() {
 
         $.ajax({
            type: 'POST',
-           url: 'highscores/add',
+           url: 'highscores',
            data: {
              name: n,
              cloud: c,

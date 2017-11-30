@@ -3,12 +3,8 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var Database = require('../lib/database');
 
-// create application/json parser
-//var jsonParser = bodyParser.json();
-
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
-
 
 // middleware that is specific to this router
 router.use(function timeLog (req, res, next) {
@@ -17,7 +13,7 @@ router.use(function timeLog (req, res, next) {
 })
 
 router.get('/list', urlencodedParser, function(req, res, next) {
-    console.log('[get highscore list]');
+    console.log('[GET /highscores/list]');
     Database.getDb(req.app, function(err, db) {
         if (err) {
             return next(err);
@@ -42,8 +38,9 @@ router.get('/list', urlencodedParser, function(req, res, next) {
     });
 });
 
-router.post('/add', urlencodedParser, function(req, res, next) {
-    console.log('[post highscore add] body =', req.body,
+// Accessed at /highscores
+router.post('/', urlencodedParser, function(req, res, next) {
+    console.log('[POST /highscores] body =', req.body,
                 ' host =', req.headers.host,
                 ' user-agent =', req.headers['user-agent'],
                 ' referer =', req.headers.referer);

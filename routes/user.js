@@ -15,7 +15,7 @@ router.use(function timeLog (req, res, next) {
 })
 
 router.get('/id', function(req, res, next) {
-    console.log('[get user id]');
+    console.log('[GET /user/id]');
     Database.getDb(req.app, function(err, db) {
         if (err) {
             return next(err);
@@ -44,7 +44,7 @@ router.get('/id', function(req, res, next) {
 });
 
 router.post('/stats', urlencodedParser, function(req, res, next) {
-    console.log('[post stats add]\n',
+    console.log('[POST /user/stats]\n',
                 ' body =', req.body, '\n',
                 ' host =', req.headers.host,
                 ' user-agent =', req.headers['user-agent'],
@@ -102,7 +102,7 @@ router.post('/stats', urlencodedParser, function(req, res, next) {
 });
 
 router.get('/stats', function(req, res, next) {
-    console.log('[get userstats]');
+    console.log('[GET /user/stats]');
 
     Database.getDb(req.app, function(err, db) {
         if (err) {
