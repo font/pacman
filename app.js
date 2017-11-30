@@ -10,7 +10,7 @@ var assert = require('assert');
 // Routes
 var highscores = require('./routes/highscores');
 var user = require('./routes/user');
-var loc = require('./routes/loc');
+var loc = require('./routes/location');
 
 // App
 var app = express();
@@ -24,7 +24,7 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.use('/highscores', highscores);
 app.use('/user', user);
-app.use('/loc', loc);
+app.use('/location', loc);
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {

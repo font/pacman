@@ -98,7 +98,7 @@ function geronimo() {
         $.ajax({
             datatype: "json",
             type: "GET",
-            url: "loc/metadata",
+            url: "location/metadata",
             timeout: 30000, // wait no more than 30 seconds
             success: function(msg){
                 $(".cloudprovider").append("<b>" + msg['cloud'] + "</b>");
