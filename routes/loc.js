@@ -48,74 +48,6 @@ function getCloudMetadata(callback) {
 
 }
 
-function getGCPCloudMetadata(callback) {
-    console.log('getGCPCloudMetadata');
-    // Set options to retrieve GCE zone for instance
-    var gcpOptions = {
-        hostname: 'metadata.google.internal',
-        port: 80,
-        path: '/computeMetadata/v1/instance/zone',
-        method: 'GET',
-        timeout: 10000,
-        headers: {
-          'Metadata-Flavor': 'Google'
-        }
-    };
-
-    var cloudName = 'unknown',
-        zone = 'unknown';
-
-    var req = http.request(gcpOptions, (zoneRes) => {
-        let error;
-
-        if (zoneRes.statusCode !== 200) {
-            error = new Error(`Request Failed.\n` +
-                              `Status Code: ${zoneRes.statusCode}`);
-        }
-
-        if (error) {
-            console.log(error.message);
-            // consume response data to free up memory
-            zoneRes.resume();
-            callback(error, cloudName, zone);
-            return;
-        }
-
-        console.log(`STATUS: ${zoneRes.statusCode}`);
-        console.log(`HEADERS: ${JSON.stringify(zoneRes.headers)}`);
-        zoneRes.setEncoding('utf8');
-
-        zoneRes.on('data', (chunk) => {
-            console.log(`BODY: ${chunk}`);
-            zone = chunk;
-        });
-
-        zoneRes.on('end', () => {
-            console.log('No more data in response.');
-            cloudName = 'GCP'; // Request was successful
-
-            // get the zone substring in uppercase
-            var zoneSplit = zone.split('/');
-            zone = zoneSplit[zoneSplit.length - 1].toLowerCase();
-            console.log(`CLOUD: ${cloudName}`);
-            console.log(`ZONE: ${zone}`);
-
-            // return CLOUD and ZONE data
-            callback(null, cloudName, zone);
-        });
-
-    });
-
-    req.on('error', (e) => {
-        console.log(`problem with request: ${e.message}`);
-        // return CLOUD and ZONE data
-        callback(e, cloudName, zone);
-    });
-
-    // End request
-    req.end();
-}
-
 function getAWSCloudMetadata(callback) {
     console.log('getAWSCloudMetadata');
     // Set options to retrieve AWS zone for instance
@@ -249,32 +181,10 @@ function getAzureCloudMetadata(callback) {
     req.end();
 }
 
-function getHost() {
-    console.log('[get host]');
-    var host = os.hostname();
-    console.log(`HOST: ${host}`);
-    return host;
-}
-
-router.get('/cloudprovider/get', function(req, res, next) {
-    console.log('[get cloudprovider]');
-    var cloud = 'unknown';
-    console.log(`CLOUD PROVIDER: ${cloud}`);
-    res.json(cloud);
-});
-
-router.get('/host/get', function(req, res, next) {
-    console.log('[get host]');
-    var host = os.hostname();
-    console.log(`HOST: ${host}`);
-    res.json(host);
-});
-
-router.get('/zone/get', function(req, res, next) {
-    console.log('[get zone]');
-
+function getGCPCloudMetadata(callback) {
+    console.log('getGCPCloudMetadata');
     // Set options to retrieve GCE zone for instance
-    var options = {
+    var gcpOptions = {
         hostname: 'metadata.google.internal',
         port: 80,
         path: '/computeMetadata/v1/instance/zone',
@@ -285,36 +195,65 @@ router.get('/zone/get', function(req, res, next) {
         }
     };
 
-    var zone = 'unknown';
+    var cloudName = 'unknown',
+        zone = 'unknown';
 
-    var req = http.request(options, (zoneRes) => {
+    var req = http.request(gcpOptions, (zoneRes) => {
+        let error;
+
+        if (zoneRes.statusCode !== 200) {
+            error = new Error(`Request Failed.\n` +
+                              `Status Code: ${zoneRes.statusCode}`);
+        }
+
+        if (error) {
+            console.log(error.message);
+            // consume response data to free up memory
+            zoneRes.resume();
+            callback(error, cloudName, zone);
+            return;
+        }
+
         console.log(`STATUS: ${zoneRes.statusCode}`);
         console.log(`HEADERS: ${JSON.stringify(zoneRes.headers)}`);
         zoneRes.setEncoding('utf8');
+
         zoneRes.on('data', (chunk) => {
             console.log(`BODY: ${chunk}`);
             zone = chunk;
         });
+
         zoneRes.on('end', () => {
             console.log('No more data in response.');
+            cloudName = 'GCP'; // Request was successful
+
             // get the zone substring in uppercase
             var zoneSplit = zone.split('/');
             zone = zoneSplit[zoneSplit.length - 1].toLowerCase();
-            // respond with ZONE json data
+            console.log(`CLOUD: ${cloudName}`);
             console.log(`ZONE: ${zone}`);
-            res.json(zone);
+
+            // return CLOUD and ZONE data
+            callback(null, cloudName, zone);
         });
+
     });
 
     req.on('error', (e) => {
         console.log(`problem with request: ${e.message}`);
-        // respond with ZONE json data
-        console.log(`ZONE: ${zone}`);
-        res.json(zone);
+        // return CLOUD and ZONE data
+        callback(e, cloudName, zone);
     });
 
     // End request
     req.end();
-});
+}
+
+function getHost() {
+    console.log('[getHost]');
+    var host = os.hostname();
+    console.log(`HOST: ${host}`);
+    return host;
+}
 
 module.exports = router;

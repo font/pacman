@@ -119,42 +119,6 @@ function geronimo() {
         });
     }
 
-    function ajaxGetCloudProvider() {
-        $.ajax({
-            datatype: "json",
-            type: "GET",
-            url: "loc/cloudprovider/get",
-            success: function(msg){
-                $(".cloudprovider").append("<b>" + msg + "</b>");
-                game.zone = msg;
-            }
-        });
-    }
-
-    function ajaxGetZone() {
-        $.ajax({
-            datatype: "json",
-            type: "GET",
-            url: "loc/zone/get",
-            success: function(msg){
-                $(".zone").append("<b>" + msg + "</b>");
-                game.zone = msg;
-            }
-        });
-    }
-
-    function ajaxGetHost() {
-        $.ajax({
-            datatype: "json",
-            type: "GET",
-            url: "loc/host/get",
-            success: function(msg){
-                $(".host").append("<b>" + msg + "</b>");
-                game.zone = msg;
-            }
-        });
-    }
-
     function ajaxGetUserId() {
         $.ajax({
             datatype: "json",
@@ -203,18 +167,6 @@ function geronimo() {
 
     function getCloudMetadata() {
         setTimeout(ajaxGetCloudMetadata, 30);
-    }
-
-    function getCloudProvider() {
-        setTimeout(ajaxGetCloudProvider, 30);
-    }
-
-    function getZone() {
-        setTimeout(ajaxGetZone,30);
-    }
-
-    function getHost() {
-        setTimeout(ajaxGetHost, 30);
     }
 
     function updateUserStats() {
