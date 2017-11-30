@@ -79,7 +79,7 @@ tr:hover {
 
 #highscore-content { max-width: 800px; }
 #highscore-table { width: 100%; text-align: center;}
-#livestats-content { max-width: 900px; }
+#livestats-content { max-width: 1024px; }
 #livestats-table { width: 100%; text-align: center;}
 #rank {}
 #playername {}
