@@ -77,7 +77,7 @@ tr:hover {
     background-color: rgba(0,0,0,0.4);
 }
 
-#highscore-content { max-width: 800px; }
+#highscore-content { max-width: 1080px; }
 #highscore-table { width: 100%; text-align: center;}
 #livestats-content { max-width: 1024px; }
 #livestats-table { width: 100%; text-align: center;}
