@@ -26,26 +26,106 @@ router.get('/metadata', function(req, res, next) {
 
 function getCloudMetadata(callback) {
     console.log('getCloudMetadata');
-    // Try AWS first
-    getAWSCloudMetadata(function(err, c, z) {
+    // Try Openstack first
+    getOpenStackCloudMetadata(function(err, c, z) {
         if (err) {
-            // Try Azure next
-            getAzureCloudMetadata(function(err, c, z) {
+            // Try AWS next
+            getAWSCloudMetadata(function(err, c, z) {
                 if (err) {
-                    // Try GCP next
-                    getGCPCloudMetadata(function(err, c, z) {
-                        // Return result regardless of error
-                        callback(c, z); // Running in GCP or unknown
+                    // Try Azure next
+                    getAzureCloudMetadata(function(err, c, z) {
+                        if (err) {
+                            // Try GCP next
+                            getGCPCloudMetadata(function(err, c, z) {
+                                // Return result regardless of error
+                                callback(c, z); // Running in GCP or unknown
+                            });
+                        } else {
+                            callback(c, z); // Running in Azure
+                        }
                     });
                 } else {
-                    callback(c, z); // Running in Azure
+                    callback(c, z); // Running in AWS
                 }
             });
         } else {
-            callback(c, z); // Running in AWS
+            callback(c, z); // Running in OpenStack
         }
     });
 
+}
+
+function getOpenStackCloudMetadata(callback) {
+    console.log('getOpenStackCloudMetadata');
+    // Set options to retrieve OpenStack zone for instance
+    var osOptions = {
+        hostname: '169.254.169.254',
+        port: 80,
+        path: '/openstack/latest/meta_data.json',
+        method: 'GET',
+        timeout: 10000,
+    };
+
+    var cloudName = 'unknown',
+        zone = 'unknown';
+
+    var req = http.request(osOptions, (metadataRes) => {
+        let error;
+
+        if (metadataRes.statusCode !== 200) {
+            error = new Error(`Request Failed.\n` +
+                              `Status Code: ${metadataRes.statusCode}`);
+        }
+
+        if (error) {
+            console.log(error.message);
+            // consume response data to free up memory
+            metadataRes.resume();
+            callback(error, cloudName, zone);
+            return;
+        }
+
+        console.log(`STATUS: ${metadataRes.statusCode}`);
+        console.log(`HEADERS: ${JSON.stringify(metadataRes.headers)}`);
+        metadataRes.setEncoding('utf8');
+
+        var metaData;
+
+        metadataRes.on('data', (chunk) => {
+            console.log(`BODY: ${chunk}`);
+            metaData = JSON.parse(chunk);
+        });
+
+        metadataRes.on('end', () => {
+            console.log('No more data in response.');
+            cloudName = 'OpenStack'; // Request was successful
+            zone = metaData.availability_zone;
+
+            // use extra metadata to identify the cloud if available
+            if (metaData.meta) {
+                clusterId = metaData.meta.clusterid;
+                if (clusterId) {
+                    cloudName += ' - ' + clusterId.split('.')[0];
+                }
+            }
+
+            console.log(`CLOUD: ${cloudName}`);
+            console.log(`ZONE: ${zone}`);
+
+            // return CLOUD and ZONE data
+            callback(null, cloudName, zone);
+        });
+
+    });
+
+    req.on('error', (e) => {
+        console.log(`problem with request: ${e.message}`);
+        // return CLOUD and ZONE data
+        callback(e, cloudName, zone);
+    });
+
+    // End request
+    req.end();
 }
 
 function getAWSCloudMetadata(callback) {
