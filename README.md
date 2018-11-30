@@ -34,17 +34,22 @@ To build the image run:
 
 ```
 cd docker
-docker build -t <user>/pacman-nodejs-app .
+docker build -t <registry>/<user>/pacman-nodejs-app .
 ```
 
 You can test the image by running:
 
 ```
-docker run -p 8000:8080 <user>/pacman-nodejs-app
+docker run -p 8000:8080 <registry>/<user>/pacman-nodejs-app
 ```
 
 And going to `http://localhost:8000/` to see if you get the Pac-Man game.
 
+Once you're satisfied you can push the image to the container registry.
+
+```
+docker push <registry>/<user>/pacman-nodejs-app
+```
 
 ### Building using an s2i image
 
