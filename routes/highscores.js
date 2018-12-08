@@ -12,6 +12,12 @@ router.use(function timeLog (req, res, next) {
     next();
 })
 
+// Retrieve the top 10 (default) high scores
+var numHighscore = 10
+if (process.env.NUM_HIGHSCORE) {
+    numHighscore = parseInt(process.env.NUM_HIGHSCORE, 10);
+}
+
 router.get('/list', urlencodedParser, function(req, res, next) {
     console.log('[GET /highscores/list]');
     Database.getDb(req.app, function(err, db) {
@@ -19,9 +25,8 @@ router.get('/list', urlencodedParser, function(req, res, next) {
             return next(err);
         }
 
-        // Retrieve the top 10 high scores
         var col = db.collection('highscore');
-        col.find({}).sort([['score', -1]]).limit(10).toArray(function(err, docs) {
+        col.find({}).sort([['score', -1]]).limit(numHighscore).toArray(function(err, docs) {
             var result = [];
             if (err) {
                 console.log(err);
