@@ -37,27 +37,28 @@ function getCloudMetadata(callback) {
                     // Try Azure next
                     getAzureCloudMetadata(function(err, c, z) {
                         if (err) {
+                            // Try GCP next
                             getGCPCloudMetadata(function(err, c, z) {
                                 if (err) {
-                                    // Try GCP next
-                                    getGeneric(function(err, c, z) {
+				    // Query k8s node api
+                                    getK8sCloudMetadata(function(err, c, z) {
                                         // Return result regardless of error
-                                        callback(c, z); // Running in GCP or unknown
+                                        callback(c, z); // Running against k8s api or unknown
                                     });
                                 } else {
-                                    callback(c, z); // Running in Azure
+                                    callback(c, z); // Running in GCP
                                 }
                             });
                         } else {
-                            callback(c, z); // Running in AWS
+                            callback(c, z); // Running in Azure
                         }
                     });
                 } else {
-                    callback(c, z); // Running in OpenStack
+                    callback(c, z); // Running in AWS
                 }
             });
         } else {
-            callback(c, z); // Running in Generic
+            callback(c, z); // Running in OpenStack
         }
     });
 }
@@ -336,9 +337,9 @@ function getGCPCloudMetadata(callback) {
     req.end();
 }
 
-function getGeneric(callback) {
-    console.log('getGeneric');
-    // Set options to retrieve generic information
+function getK8sCloudMetadata(callback) {
+    console.log('getK8sCloudMetadata');
+    // Set options to retrieve k8s api information
     var node_name = process.env.MY_NODE_NAME;
     console.log('Querying ' + node_name + ' for cloud data');
 
