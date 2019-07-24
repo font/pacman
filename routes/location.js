@@ -394,13 +394,17 @@ function getK8sCloudMetadata(callback) {
             var metaData = JSON.parse(body.join(''));
             console.log(`RESULT: ${metaData}`);
             console.log('No more data in response.');
-            // Split ProviderID
-            var provider = metaData.spec.providerID;
-            cloudName = provider.split(":", 1); // Request was successful
+
+	    if (metaData.spec.providerID) {
+            	var provider = metaData.spec.providerID;
+            	cloudName = String(provider.split(":", 1)); // Split on providerID if request was successful
+	    }
+
 
             // use the annotation  to identify the zone if available
             if (metaData.metadata.labels['failure-domain.beta.kubernetes.io/zone']) {
-                zone = metaData.metadata.labels['failure-domain.beta.kubernetes.io/zone']
+                zone = metaData.metadata.labels['failure-domain.beta.kubernetes.io/zone'].toLowerCase();
+
             }
 
             console.log(`CLOUD: ${cloudName}`);
