@@ -404,6 +404,7 @@ function getK8sCloudMetadata(callback) {
             // use the annotation  to identify the zone if available
             if (metaData.metadata.labels['failure-domain.beta.kubernetes.io/zone']) {
                 zone = metaData.metadata.labels['failure-domain.beta.kubernetes.io/zone'].toLowerCase();
+
             }
 
             console.log(`CLOUD: ${cloudName}`);
