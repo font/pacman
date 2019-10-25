@@ -28,8 +28,8 @@ router.get('/metadata', function(req, res, next) {
 
 function getCloudMetadata(callback) {
     console.log('getCloudMetadata');
-    // Try Openstack first
-    getOpenStackCloudMetadata(function(err, c, z) {
+    // Query k8s node api
+    getK8sCloudMetadata(function(err, c, z) {
         if (err) {
             // Try AWS next
             getAWSCloudMetadata(function(err, c, z) {
@@ -40,10 +40,10 @@ function getCloudMetadata(callback) {
                             // Try GCP next
                             getGCPCloudMetadata(function(err, c, z) {
                                 if (err) {
-				    // Query k8s node api
-                                    getK8sCloudMetadata(function(err, c, z) {
+                                    // Try Openstack next
+                                    getOpenStackCloudMetadata(function(err, c, z) {
                                         // Return result regardless of error
-                                        callback(c, z); // Running against k8s api or unknown
+                                        callback(c, z); // Running in OpenStack or unknown
                                     });
                                 } else {
                                     callback(c, z); // Running in GCP
@@ -58,7 +58,7 @@ function getCloudMetadata(callback) {
                 }
             });
         } else {
-            callback(c, z); // Running in OpenStack
+            callback(c, z); // Running against k8s api
         }
     });
 }
