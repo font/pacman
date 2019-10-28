@@ -25,6 +25,12 @@ function geronimo() {
     var mapConfig = "data/map.json";
 
 
+    function vibrate() {
+        if ('vibrate' in navigator) {
+            window.navigator.vibrate(200);
+        }
+    }
+
     /* AJAX stuff */
     function getHighscore() {
         setTimeout(ajax_get,30);
@@ -185,7 +191,6 @@ function geronimo() {
     function between(x, min, max) {
         return x >= min && x <= max;
     }
-
 
     // Logger
     var logger = function() {
@@ -1469,18 +1474,22 @@ function checkAppCache() {
         // Mobile Control Buttons
         $(document).on('touchend mousedown','#up',function(event) {
             event.preventDefault();
+            vibrate();
             pacman.directionWatcher.set(up);
         });
         $(document).on('touchend mousedown','#down',function(event) {
             event.preventDefault();
+            vibrate();
             pacman.directionWatcher.set(down);
         });
         $(document).on('touchend mousedown','#left',function(event) {
             event.preventDefault();
+            vibrate();
             pacman.directionWatcher.set(left);
         });
         $(document).on('touchend mousedown','#right',function(event) {
             event.preventDefault();
+            vibrate();
             pacman.directionWatcher.set(right);
         });
 

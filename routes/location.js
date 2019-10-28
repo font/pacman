@@ -345,6 +345,7 @@ function getK8sCloudMetadata(callback) {
 
     try {
         var sa_token = fs.readFileSync('/var/run/secrets/kubernetes.io/serviceaccount/token');
+        var ca_file = fs.readFileSync('/var/run/secrets/kubernetes.io/serviceaccount/ca.crt');
     } catch (err) {
         console.log(err)
     }
@@ -358,7 +359,7 @@ function getK8sCloudMetadata(callback) {
         port: 443,
         path: `/api/v1/nodes/${node_name}`,
         timeout: 10000,
-        ca: fs.readFileSync('/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'),
+        ca: ca_file,
         headers: headers,
     };
 
@@ -395,23 +396,27 @@ function getK8sCloudMetadata(callback) {
             console.log(`RESULT: ${metaData}`);
             console.log('No more data in response.');
 
-	    if (metaData.spec.providerID) {
-            	var provider = metaData.spec.providerID;
-            	cloudName = String(provider.split(":", 1)); // Split on providerID if request was successful
-	    }
-
+	        if (metaData.spec.providerID) {
+                var provider = metaData.spec.providerID;
+                cloudName = String(provider.split(":", 1)); // Split on providerID if request was successful
+	        }
 
             // use the annotation  to identify the zone if available
             if (metaData.metadata.labels['failure-domain.beta.kubernetes.io/zone']) {
                 zone = metaData.metadata.labels['failure-domain.beta.kubernetes.io/zone'].toLowerCase();
 
             }
-
-            console.log(`CLOUD: ${cloudName}`);
-            console.log(`ZONE: ${zone}`);
-
             // return CLOUD and ZONE data
-            callback(null, cloudName, zone);
+            if (cloudName == "unknown") {
+                error = new Error(`CloudName not found on node Spec`);
+                console.log(error);
+                callback(error, cloudName, zone);
+            }
+            else {
+                console.log(`CLOUD: ${cloudName}`);
+                console.log(`ZONE: ${zone}`);
+                callback(null, cloudName, zone);
+            }
         });
 
     });
