@@ -396,10 +396,10 @@ function getK8sCloudMetadata(callback) {
             console.log(`RESULT: ${metaData}`);
             console.log('No more data in response.');
 
-	        if (metaData.spec.providerID) {
+            if (metaData.spec.providerID) {
                 var provider = metaData.spec.providerID;
                 cloudName = String(provider.split(":", 1)); // Split on providerID if request was successful
-	        }
+            }
 
             // use the annotation  to identify the zone if available
             if (metaData.metadata.labels['failure-domain.beta.kubernetes.io/zone']) {
