@@ -28,8 +28,8 @@ router.get('/metadata', function(req, res, next) {
 
 function getCloudMetadata(callback) {
     console.log('getCloudMetadata');
-    // Try Openstack first
-    getOpenStackCloudMetadata(function(err, c, z) {
+    // Query k8s node api
+    getK8sCloudMetadata(function(err, c, z) {
         if (err) {
             // Try AWS next
             getAWSCloudMetadata(function(err, c, z) {
@@ -40,10 +40,10 @@ function getCloudMetadata(callback) {
                             // Try GCP next
                             getGCPCloudMetadata(function(err, c, z) {
                                 if (err) {
-				    // Query k8s node api
-                                    getK8sCloudMetadata(function(err, c, z) {
+                                    // Try Openstack next
+                                    getOpenStackCloudMetadata(function(err, c, z) {
                                         // Return result regardless of error
-                                        callback(c, z); // Running against k8s api or unknown
+                                        callback(c, z); // Running in OpenStack or unknown
                                     });
                                 } else {
                                     callback(c, z); // Running in GCP
@@ -58,7 +58,7 @@ function getCloudMetadata(callback) {
                 }
             });
         } else {
-            callback(c, z); // Running in OpenStack
+            callback(c, z); // Running against k8s api
         }
     });
 }
@@ -345,6 +345,7 @@ function getK8sCloudMetadata(callback) {
 
     try {
         var sa_token = fs.readFileSync('/var/run/secrets/kubernetes.io/serviceaccount/token');
+        var ca_file = fs.readFileSync('/var/run/secrets/kubernetes.io/serviceaccount/ca.crt');
     } catch (err) {
         console.log(err)
     }
@@ -358,7 +359,7 @@ function getK8sCloudMetadata(callback) {
         port: 443,
         path: `/api/v1/nodes/${node_name}`,
         timeout: 10000,
-        ca: fs.readFileSync('/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'),
+        ca: ca_file,
         headers: headers,
     };
 
@@ -395,23 +396,27 @@ function getK8sCloudMetadata(callback) {
             console.log(`RESULT: ${metaData}`);
             console.log('No more data in response.');
 
-	    if (metaData.spec.providerID) {
-            	var provider = metaData.spec.providerID;
-            	cloudName = String(provider.split(":", 1)); // Split on providerID if request was successful
-	    }
-
+            if (metaData.spec.providerID) {
+                var provider = metaData.spec.providerID;
+                cloudName = String(provider.split(":", 1)); // Split on providerID if request was successful
+            }
 
             // use the annotation  to identify the zone if available
             if (metaData.metadata.labels['failure-domain.beta.kubernetes.io/zone']) {
                 zone = metaData.metadata.labels['failure-domain.beta.kubernetes.io/zone'].toLowerCase();
 
             }
-
-            console.log(`CLOUD: ${cloudName}`);
-            console.log(`ZONE: ${zone}`);
-
             // return CLOUD and ZONE data
-            callback(null, cloudName, zone);
+            if (cloudName == "unknown") {
+                error = new Error(`CloudName not found on node Spec`);
+                console.log(error);
+                callback(error, cloudName, zone);
+            }
+            else {
+                console.log(`CLOUD: ${cloudName}`);
+                console.log(`ZONE: ${zone}`);
+                callback(null, cloudName, zone);
+            }
         });
 
     });

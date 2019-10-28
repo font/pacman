@@ -20,7 +20,7 @@ fonts/PressStart2Play.ttf
 
 # JavaScript
 pacman-canvas.js
-js/jquery-1.10.2.min.js
+js/jquery-3.4.1.min.js
 js/jquery.hammer.min.js
 
 # data
