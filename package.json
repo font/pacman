@@ -13,7 +13,7 @@
     "body-parser": "^1.17.1",
     "express": "^4.14.1",
     "jade": "^1.11.0",
-    "mongodb": "^2.2.24"
+    "mongodb": "^3.6.1"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
