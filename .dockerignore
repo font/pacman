@@ -1,9 +1,11 @@
 .dockerignore
 Dockerfile
+.github
 .devcontainer
 .git
 .gitignore
 README.md
+SECURITY.md
 scripts
 node_modules
 npm-debug.log
