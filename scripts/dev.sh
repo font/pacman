@@ -60,23 +60,22 @@ docker run --rm -d --name ${MONGO_CONTAINER_NAME} \
     -v ${TMP_DOCKER_VOL}:${MONGO_WORKDIR} \
     ${MONGO_CONTAINER_IMAGE}
 
-## Interactive dev container
+## Mongo shell container
 # docker run --rm -it --name ${PACMAN_CONTAINER_NAME} \
 #     --network ${DOCKER_NETWORK_NAME} \
 #     -e MONGO_SERVICE_HOST=${MONGO_CONTAINER_NAME} \
-#     -e MONGO_AUTH_USER \
-#     -e MONGO_AUTH_PWD \
+#     -e MONGO_AUTH_USER=${MONGO_AUTH_USER} \
+#     -e MONGO_AUTH_PWD=${MONGO_AUTH_PWD} \
 #     -v ${LOCAL_WORKDIR}:${PACMAN_WORKDIR} \
 #     -p ${PACMAN_LOCAL_PORT}:${PACMAN_CONTAINER_PORT} \
 #     --entrypoint bash \
-#     mongo
-# mongo --host ${MONGO_SERVICE_HOST} -u ${MONGO_AUTH_USER} -p ${MONGO_AUTH_PWD} --authenticationDatabase admin pacman
+#     mongo -- mongo --host ${MONGO_SERVICE_HOST} -u ${MONGO_AUTH_USER} -p ${MONGO_AUTH_PWD} --authenticationDatabase admin pacman
 
 docker run --rm -it --name ${PACMAN_CONTAINER_NAME} \
     --network ${DOCKER_NETWORK_NAME} \
     -e MONGO_SERVICE_HOST=${MONGO_CONTAINER_NAME} \
-    -e MONGO_AUTH_USER \
-    -e MONGO_AUTH_PWD \
+    -e MONGO_AUTH_USER=${MONGO_AUTH_USER} \
+    -e MONGO_AUTH_PWD=${MONGO_AUTH_PWD} \
     -v ${LOCAL_WORKDIR}:${PACMAN_WORKDIR} \
     -p ${PACMAN_LOCAL_PORT}:${PACMAN_CONTAINER_PORT} \
     --entrypoint bash \
