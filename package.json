@@ -6,7 +6,8 @@
   "main": "bin/server.js",
   "scripts": {
     "start": "node .",
-    "dev": "nodemon ."
+    "dev": "nodemon .",
+    "test": "standard"
   },
   "license": "GPLv3",
   "dependencies": {
@@ -16,6 +17,7 @@
     "mongodb": "^2.2.24"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "standard": "*"
   }
 }
