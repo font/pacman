@@ -1,9 +1,10 @@
 {
   "name": "pacman",
   "version": "0.0.1",
-  "description": "Pac-Man Node.js Game",
-  "author": "Ivan Font <ivan@ivanfont.com>",
+  "description": "Pac-Man Node.js Game, based on work from Ivan Font <ivan@ivanfont.com> & Platzh1rsch <http://platzh1rsch.ch/>",
+  "author": "Sylvain Huguet <sylvain@huguet.me>",
   "main": "bin/server.js",
+  "type": "module",
   "scripts": {
     "start": "node .",
     "dev": "nodemon ."
@@ -12,10 +13,10 @@
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.14.1",
-    "jade": "^1.11.0",
-    "mongodb": "^2.2.24"
+    "pug": "^3.0.2",
+    "mongodb": "^4.4.1"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "nodemon": "^2.0.15"
   }
 }
