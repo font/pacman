@@ -1,9 +1,9 @@
-Dockerfile
 .dockerignore
+Dockerfile
+.devcontainer
 .git
 .gitignore
 README.md
-data
 scripts
 node_modules
 npm-debug.log
