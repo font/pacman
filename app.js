@@ -19,7 +19,8 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// app.set('view engine', 'jade'); // "jade": "^0.29.0",
+app.set('view engine', 'pug');
 
 // Handle root web server's public directory
 app.use('/', express.static(path.join(__dirname, 'public')));

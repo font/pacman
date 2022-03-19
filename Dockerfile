@@ -11,9 +11,9 @@ COPY package*.json ./
 
 # Install app dependencies
 # Production
-#RUN npm ci --only=production
+RUN npm ci --only=production
 # Development
-RUN npm install
+# RUN npm install
 
 # Bundle app source
 # Refer to .dockerignore to exclude content as needed
