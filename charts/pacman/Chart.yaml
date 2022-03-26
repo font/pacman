@@ -1,12 +1,12 @@
 apiVersion: v2
-appVersion: 0.1.0
-version: 0.1.0
+version: 0.1.1
+appVersion: "0.1.1"
 name: pacman
-description: Pac-Man for Kubernetes
-home: https://github.com/shuguet/pacman-kube
+description: Pac-Man Demo App for Kubernetes
+home: https://github.com/shuguet/pacman
 icon: https://www.huguet.me
 sources:
-  - https://github.com/shuguet/pacman-kube
+  - https://github.com/shuguet/pacman
 maintainers:
   - name: Dean Lewis
     url: https://veducate.co.uk
