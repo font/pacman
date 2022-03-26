@@ -7,5 +7,6 @@ Dockerfile
 README.md
 SECURITY.md
 scripts
+charts
 node_modules
 npm-debug.log
