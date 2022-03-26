@@ -3,5 +3,5 @@
 ## Install
 
 ```
-$ helm install shuguet/pacman --name=pacman --namespace=pacman
+$ helm install pacman --name=pacman --create-namespace
 ```
