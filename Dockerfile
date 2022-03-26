@@ -10,10 +10,10 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install app dependencies
-# Production
-RUN npm ci --only=production
 # Development
 # RUN npm install
+# Production
+RUN npm ci --only=production
 
 # Bundle app source
 # Refer to .dockerignore to exclude content as needed
@@ -24,4 +24,3 @@ EXPOSE 8080
 
 # Run container
 CMD [ "npm", "start" ]
-# CMD [ "node", "bin/server.js" ]

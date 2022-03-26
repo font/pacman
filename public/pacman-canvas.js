@@ -45,8 +45,15 @@ function geronimo() {
              $("#highscore-table tbody").text("");
              for (var i = 0; i < msg.length; i++) {
                 var rank = i + 1;
-                // Can we make this shorter?
-                $("#highscore-table tbody").append("<tr><td id='rank'>" + rank + "</td><td id='playername'>" + msg[i]['name'] + "</td><td id='cloudprovider'>" + msg[i]['cloud'] + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='host'>" + msg[i]['host'] + "</td><td id='score'>" + msg[i]['score'] + "</td></tr>");
+                $("#highscore-table tbody").append(`
+                <tr>
+                    <td id='rank'>${rank}</td>
+                    <td id='playername'>${msg[i]['name']}</td>
+                    <td id='cloudprovider'>${msg[i]['cloud']}</td>
+                    <td id='zone'>${msg[i]['zone']}</td>
+                    <td id='host'>${msg[i]['host']}</td>
+                    <td id='score'>${msg[i]['score']}</td>
+                </tr>`);
              }
            }
         });
@@ -65,7 +72,18 @@ function geronimo() {
                 $("#livestats-table tbody").text("");
                 for (var i = 0; i < msg.length; i++) {
                     var userId = i + 1;
-                    $("#livestats-table tbody").append("<tr><td id='userid'>" + userId + "</td><td id='cloudprovider'>" + msg[i]['cloud'] + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='host'>" + msg[i]['host'] + "</td><td id='score'>" + msg[i]['score'] + "</td><td id='level'>" + msg[i]['level'] + "</td><td id='lives'>" + msg[i]['lives'] + "</td><td id='elapsedtime'>" + msg[i]['et'] + "</td><td id='txncount'>" + msg[i]['txncount'] + "</td></tr>");
+                    $("#livestats-table tbody").append(`
+                        <tr>
+                            <td id='userid'>${userId}</td>
+                            <td id='cloudprovider'>${msg[i]['cloud']}</td>
+                            <td id='zone'>${msg[i]['zone']}</td>
+                            <td id='host'>${msg[i]['host']}</td>
+                            <td id='score'>${msg[i]['score']}</td>
+                            <td id='level'>${msg[i]['level']}</td>
+                            <td id='lives'>${msg[i]['lives']}</td>
+                            <td id='elapsedtime'>${msg[i]['et']}</td>
+                            <td id='txncount'>${msg[i]['txncount']}</td>
+                        </tr>`);
                 }
 
                 if (game.user.livestats) {
@@ -107,11 +125,11 @@ function geronimo() {
             url: "location/metadata",
             timeout: 30000, // wait no more than 30 seconds
             success: function(msg){
-                $(".cloudprovider").append("<b>" + msg['cloud'] + "</b>");
+                $(".cloudprovider").append(`<b>${msg['cloud']}</b>`);
                 game.cloudProvider = msg['cloud'];
-                $(".zone").append("<b>" + msg['zone'] + "</b>");
+                $(".zone").append(`<b>${msg['zone']}</b>`);
                 game.zone = msg['zone'];
-                $(".host").append("<b>" + msg['host'] + "</b>");
+                $(".host").append(`<b>${msg['host']}</b>`);
                 game.host = msg['host'];
             },
             error: function() {
@@ -399,7 +417,7 @@ function geronimo() {
         this.nextLevel = function() {
             this.level++;
             console.log("Level "+game.level);
-            game.showMessage("Level "+game.level, this.getLevelTitle() + "<br/>(Click to continue!)");
+            game.showMessage(`Level ${game.level}`, `${this.getLevelTitle()}<br/>(Click to continue!)`);
             game.refreshLevel(".level");
             this.init(1);
         };
@@ -408,7 +426,7 @@ function geronimo() {
             var html = "";
             for (var i = 0; i<count; i++) {
                 html += " <img src='img/heart.png'>";
-                }
+            }
             $(".lives").html("Lives: "+html);
 
         };
@@ -485,7 +503,7 @@ function geronimo() {
             else {
                 // pause timer
                 this.timer.stop();
-                this.showMessage("Pause","Click to Resume");
+                this.showMessage("Pause", "Click to Resume");
             }
         };
 
@@ -666,7 +684,7 @@ function geronimo() {
             this.score += i;
         };
         this.refresh = function(h) {
-            $(h).html("Score: "+this.score);
+            $(h).html(`Score: ${this.score}`);
         };
 
     }
@@ -678,7 +696,7 @@ function geronimo() {
     Sound.play = function (sound) {
         if (game.soundfx == 1) {
             var audio = document.getElementById(sound);
-            (audio !== null) ? audio.play() : console.log(sound+" not found");
+            (audio !== null) ? audio.play() : console.log(`${sound} not found`);
             }
     };
 
@@ -1327,10 +1345,15 @@ function geronimo() {
             blinky.reset();
             clyde.reset();
             this.lives--;
-            console.log("pacman died, "+this.lives+" lives left");
+            console.log(`pacman died, ${this.lives} lives left`);
             if (this.lives <= 0) {
-                var input = "<div id='highscore-form'><span id='form-validater'></span><input type='text' id='playerName'/><span class='button' id='score-submit'>save</span></div>";
-                game.showMessage("Game over","Total Score: "+game.score.score+input);
+                var input = `
+                    <div id='highscore-form'>
+                        <span id='form-validater'></span>
+                        <input type='text' id='playerName'/>
+                        <span class='button' id='score-submit'>save</span>
+                    </div>`;
+                game.showMessage("Game over", `Total Score: ${game.score.score}${input}`);
                 game.gameOver = true;
                 $('#playerName').focus();
                 }
@@ -1423,6 +1446,28 @@ function checkAppCache() {
         // Keyboard
         window.addEventListener('keydown',doKeyDown,true);
 
+        // Validate highscore on enter
+        $('body').on('keypress', '#playerName', function(e) {
+            if (e.which == 13) {
+                if ($('#playerName').val() === "" || $('#playerName').val() === undefined) {
+                    $('#form-validater').html("Please enter a name<br/>");
+                } else {
+                    $('#form-validater').html("");
+                    addHighscore();
+                    game.showContent('highscore-content');
+                    getHighscore();
+                }
+            }
+        });
+
+        // Go to highscore on enter
+        $('body').on('keypress', '#show-highscore', function(e) {
+            if (e.which == 13) {
+
+            }
+        });
+        
+
         $('#canvas-container').click(function() {
             if (!(game.gameOver == true))    game.pauseResume();
         });
@@ -1434,6 +1479,8 @@ function checkAppCache() {
             } else {
                 $('#form-validater').html("");
                 addHighscore();
+                game.showContent('highscore-content');
+                getHighscore();
             }
         });
 

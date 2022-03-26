@@ -6,7 +6,7 @@ Pac-Man Demo App for Kubernetes
 ![Build & Publish Container](https://github.com/shuguet/pacman/actions/workflows/docker-image.yaml/badge.svg)
 
 ## Installation instructions:
-[Available on ArtifactHub](https://artifacthub.io/packages/helm/pacman/pacman)
+[Using Helm](https://artifacthub.io/packages/helm/pacman/pacman)
 
 ## Development instructions
 
