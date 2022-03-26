@@ -69,7 +69,6 @@ spec:
                   key: database-name
             - name: MY_MONGO_PORT
               value: "27017" 
-              # FIXME: Parameterize in values.yaml?
             - name: MONGO_USE_SSL
               value: "false"
             - name: MONGO_VALIDATE_SSL
