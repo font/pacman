@@ -1,52 +1,70 @@
-# pacman
-Pac-Man
+# Pac-Man
+Pac-Man Demo App for Kubernetes
 
-## Install dependencies
+![GitHub](https://img.shields.io/github/license/shuguet/pacman)
+![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/pacman)](https://artifacthub.io/packages/search?repo=pacman)
+![Build & Publish Container](https://github.com/shuguet/pacman/actions/workflows/docker-image.yaml/badge.svg)
 
+## Installation instructions:
+[Available on ArtifactHub](https://artifacthub.io/packages/helm/pacman/pacman)
+
+## Development instructions
+
+#### Install dependencies
 ```
 npm install
 ```
 
-## Getting started
+#### Getting started
 
+Build the image locally once, to check everything is working fine
 ```
-npm run start
+./scripts/build.sh
 ```
 
-## Development
+If you don't see any error, you should proceed with starting the development environment
+```
+./scripts/dev.sh
+```
 
+You should be inside one container, on the same network as a running MongoDB database server.
 ```
 npm run dev
 ```
 
-## Create Application Container Image
+You should see your Node.js server logs, keep the server running.
+Open a new browser windows, navigate to `http://localhost:8000/`, you should see the Pac-Man game.
+
+## Create Application Artifacts
 
 ### Docker Container Image
 
-The [Dockerfile](docker/Dockerfile) performs the following steps:
+The [Dockerfile](Dockerfile) performs the following steps:
 
 1. It is based on the latest Node.js.
 1. It then ADD the Pac-Man game into the configured application directory.
 1. Exposes port 8080 for the web server.
 1. Starts the Node.js application using `npm start`.
 
-To build the image run:
+To build the image in preparation for hosting it to your own repo, run:
 
 ```
-docker build -t <registry>/<user>/pacman-nodejs-app .
+docker build -t <registry>/<user>/pacman .
 ```
 
 You can test the image by running:
 
 ```
-docker run -p 8000:8080 <registry>/<user>/pacman-nodejs-app
+docker run -p 8000:8080 <registry>/<user>/pacman
 ```
-Note: You will need a working MongoDB backend. Look at: [scripts/dev.sh] to setup a local one on your machine using insecure password
-
-Once started, go to `http://localhost:8000/` to see if you get the Pac-Man game.
+Note: You will need a working MongoDB backend. Look at [scripts/dev.sh] to understand how you can setup a local one on your machine using an insecure password, for development purposes only.
 
 Once you're satisfied you can push the image to your container registry.
 
 ```
-docker push <registry>/<user>/pacman-nodejs-app
+docker push <registry>/<user>/pacman
 ```
+
+#### Helm Chart
+Explore [charts/pacman] to understand how the chart is built.
+To host your own, you will need to setup a [Helm Repository](https://helm.sh/docs/topics/chart_repository/)

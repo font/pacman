@@ -3,7 +3,7 @@
 # @Author: shuguet <sylvain@huguet.me>
 # @Date: 2022-03-10 13:51:11 
 # @Last Modified by:   shuguet <sylvain@huguet.me>
-# @Last Modified time: 2022-03-10 13:51:11 
+# @Last Modified time: 2022-03-26 13:51:11 
 #
 # Description: 
 # Helper script to develop/mainitain the Pacman app (Node.js version with MongoDB backend)
@@ -11,9 +11,9 @@
 # Required tools:
 #   - docker
 # Required steps:
-#   - build the 'pacman' docker image at least once (using `build.sh` in the same folder)
+#   - build the 'pacman' docker image at least once (using `build.sh` in the same folder, invoke it from the parent folder, see README.md for instructions)
 #
-# User defined variable:
+# User defined variables:
 MONGO_AUTH_PWD='mongoadmin'
 MONGO_AUTH_USER='secret'
 
