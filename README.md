@@ -2,7 +2,7 @@
 Pac-Man Demo App for Kubernetes
 
 ![GitHub](https://img.shields.io/github/license/shuguet/pacman)
-![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/pacman)](https://artifacthub.io/packages/search?repo=pacman)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/pacman)](https://artifacthub.io/packages/search?repo=pacman)
 ![Build & Publish Container](https://github.com/shuguet/pacman/actions/workflows/docker-image.yaml/badge.svg)
 
 ## Installation instructions:
@@ -10,17 +10,18 @@ Pac-Man Demo App for Kubernetes
 
 ## Development instructions
 
-#### Install dependencies
-```
-npm install
-```
-
 #### Getting started
 
 Build the image locally once, to check everything is working fine
 ```
 ./scripts/build.sh
 ```
+
+Once inside the build environment, you can use
+```
+npm install
+```
+to update/install newer versions of the Node.js packages used by the app.
 
 If you don't see any error, you should proceed with starting the development environment
 ```
@@ -66,5 +67,5 @@ docker push <registry>/<user>/pacman
 ```
 
 #### Helm Chart
-Explore [charts/pacman] to understand how the chart is built.
+Explore [charts/pacman](charts/pacman) to understand how the chart is built.
 To host your own, you will need to setup a [Helm Repository](https://helm.sh/docs/topics/chart_repository/)
