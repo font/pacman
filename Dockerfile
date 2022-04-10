@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:current-alpine
 
 LABEL org.opencontainers.image.authors="sylvain@huguet.me"
 
