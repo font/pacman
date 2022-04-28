@@ -27,13 +27,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
        
-      - name: 'Ls the docker directory'
-        working-directory: ./docker
-        run: ls
-
       - name: Login
         uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.CONTAINER_NAME }}
           username: ${{ secrets.ARM_CLIENT_ID }}
           password: ${{ secrets.ARM_CLIENT_SECRET }}
+          
+      - name: 'Build and push docker image to azure registry'
+        working-directory: ./docker
+      - run: |
+            docker build . -t ${{ secrets.CONTAINER_NAME }}/jesus/pacman-nodejs-app:${{ github.sha }}
+            docker push ${{ secrets.CONTAINER_NAME }}/jesus/pacman-nodejs-app:${{ github.sha }}
