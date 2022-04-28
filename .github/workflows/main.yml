@@ -23,10 +23,12 @@ jobs:
         shell: bash
       
     steps:
+      
       - name: Checkout
-        uses: actions/checkout@v2
-        
-      - uses: azure/docker-login@v1
+        uses: actions/checkout@v3
+      
+      - name: Login
+        uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.CONTAINER_NAME }}
           username: ${{ secrets.ARM_CLIENT_ID }}
