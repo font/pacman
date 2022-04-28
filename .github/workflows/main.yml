@@ -36,6 +36,6 @@ jobs:
           
       - name: 'Build and push docker image to azure registry'
         working-directory: ./docker
-      - run: |
+        run: |
             docker build . -t ${{ secrets.CONTAINER_NAME }}/jesus/pacman-nodejs-app:${{ github.sha }}
             docker push ${{ secrets.CONTAINER_NAME }}/jesus/pacman-nodejs-app:${{ github.sha }}
