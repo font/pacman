@@ -62,7 +62,8 @@ jobs:
 
       - name: Read the kube config   
         run: |
-            cat /root/.kube/config
+            sudo cat /root/.kube/config
+            sudo export KUBECONFIG=/root/.kube/config
 
 
       - name: Get the cluster Info   
