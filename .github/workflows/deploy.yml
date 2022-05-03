@@ -39,7 +39,7 @@ jobs:
       - name: Azure Login
         uses: Azure/login@v1
         with:
-          creds: "${{ secrets.AZURE_CREDENTIALS }}"
+          creds: "${{ secrets.O_AZURE_CREDENTIALS }}"
 
       - name: Azure CLI Action
         uses: azure/CLI@v1
