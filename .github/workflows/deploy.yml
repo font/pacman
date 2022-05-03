@@ -42,7 +42,6 @@ jobs:
           creds: "${{ secrets.O_AZURE_CREDENTIALS }}"
 
 
-
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
@@ -61,7 +60,9 @@ jobs:
             az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
             az aks get-credentials -n myKubernetesTest1 -g myOtherResourceGroup
    
-      
+      - name: Get the cluster Info   
+        run: |
+            kubectl cluster-info
       
       - name: 'CD to ./pacman-chart and installing it'
         working-directory: integrativeprojectchart/charts
