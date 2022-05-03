@@ -50,8 +50,6 @@ jobs:
 
       - name: Installing kubectl  
         uses: azure/setup-kubectl@v2.0
-        with:
-          version: '<version>' 
         id: install
 
 
