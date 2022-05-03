@@ -59,7 +59,12 @@ jobs:
           inlineScript: |
             az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
             az aks get-credentials -n myKubernetesTest1 -g myOtherResourceGroup
-   
+
+      - name: Get the cluster Info   
+        run: |
+            cat ~/.kube/config
+
+
       - name: Get the cluster Info   
         run: |
             kubectl cluster-info
