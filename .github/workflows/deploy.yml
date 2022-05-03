@@ -60,9 +60,9 @@ jobs:
       
       
       - name: 'CD to ./pacman-chart and installing it'
-        working-directory: integrativeprojectchart/
+        working-directory: integrativeprojectchart/charts
         run: |
-          helm install pacman-chart .
+          helm install pacman-chart integrativeprojectchart-0.1.0.tgz
 
       - uses: azure/k8s-create-secret@v1
         with:
