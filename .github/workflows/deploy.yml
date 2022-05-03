@@ -1,0 +1,57 @@
+name: 'Deploy to Kubernetes'
+
+on:
+
+  workflow_dispatch:
+
+jobs:
+
+  deployImage:
+    name: 'Update image on deployment'
+    env:
+      K8_DOCKER_REGISTRY_SERVER: ${{ secrets.K8_DOCKER_REGISTRY_SERVER }}
+      K8_CONTAINER_NAME: ${{ secrets.K8_CONTAINER_NAME }}
+      K8_PASSWORD: ${{ secrets.K8_PASSWORD }}
+      K8_USERNAME_CONTAINER: ${{ secrets.K8_USERNAME_CONTAINER }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      K8_CLUSTER_NAME: ${{ secrets.K8_CLUSTER_NAME }}
+    runs-on: ubuntu-latest
+    environment: Test
+    
+    defaults:
+      run:
+        shell: bash
+      
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ secrets.CLUSTER_NAME }}
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}
+
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.8.1
+      
+      - name: 'CD to ./pacman-chart and installing it'
+        working-directory: ./integrativeprojectchart
+        run: |
+          helm install pacman-chart
+
+      - uses: azure/k8s-create-secret@v1
+        with:
+          container-registry-url: ${{ secrets.K8_DOCKER_REGISTRY_SERVER }}
+          container-registry-username: ${{ secrets.K8_USERNAME_CONTAINER }}
+          container-registry-password: ${{ secrets.K8_PASSWORD }}
+          secret-name: acr-secret
+          namespace: pacman-namespace
+
+      - run: |
+          kubectl rollout restart deployment.apps/pacman -n pacman-namespace
+     
