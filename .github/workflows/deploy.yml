@@ -33,7 +33,16 @@ jobs:
           cluster-name: ${{ secrets.K8_CLUSTER_NAME }}
           resource-group: ${{ secrets.K8_CLUSTER_RESOURCE_GROUP }}
 
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          creds: "${{ secrets.AZURE_CREDENTIALS }}"
 
+      - name: Azure CLI Action
+        uses: Azure/cli@1.0.4
+        with:
+          inlineScript: az aks get-credentials -n myKubernetesTest1 -g myOtherResourceGroup
+   
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
