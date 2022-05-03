@@ -1,0 +1,53 @@
+name: 'Remove Kubernetes deployment'
+
+on:
+
+  workflow_dispatch:
+
+jobs:
+
+  uninstallHelm:
+    name: 'Update image on deployment'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+      
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Install Azure cli
+        run: |
+          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
+          curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+          AZ_REPO=$(lsb_release -cs)
+          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+          sudo apt-get update
+          sudo apt-get install azure-cli
+
+      - name: "Login to Azure CLI"
+        run: |	
+          az login -u ${{ secrets.AZURE_LOGIN_USERNAME }} -p ${{ secrets.AZURE_SECRET_PASSWORD }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.8.1
+
+      - name: Install Kubectl CLI  
+        uses: azure/setup-kubectl@v2.0
+        id: install
+
+
+      - name: "Login to Azure CLI"
+        run: |	
+          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION}}
+          az aks get-credentials --resource-group myOtherResourceGroup --name myKubernetesTest1
+
+
+      - name: 'Uninstalling helm chart'
+        run: |
+          helm uninstall pacman-chart
