@@ -80,15 +80,18 @@ jobs:
         working-directory: integrativeprojectchart/charts
         run: |
           helm install pacman-chart integrativeprojectchart-0.1.0.tgz
-
-      - uses: azure/k8s-create-secret@v1
+      
+      - name: Set up k8s secret
+        uses: azure/k8s-create-secret@v1
         with:
           container-registry-url: ${{ secrets.K8_DOCKER_REGISTRY_SERVER }}
           container-registry-username: ${{ secrets.K8_USERNAME_CONTAINER }}
           container-registry-password: ${{ secrets.K8_PASSWORD }}
           secret-name: acr-secret
           namespace: pacman-namespace
-
-      - run: |
+      
+      - name: Rolling restar deployment deployment.apps/pacman
+        if: always()
+        run: |
           kubectl rollout restart deployment.apps/pacman -n pacman-namespace
      
