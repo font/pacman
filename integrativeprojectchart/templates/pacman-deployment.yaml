@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: pacman-namespace
+  labels:
+    name: pacman
+  name: pacman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: pacman
+  template:
+    metadata:
+      labels:
+        name: pacman
+    spec:
+      containers:
+      - image: othercontainerregistry.azurecr.io/jesus/pacman-nodejs-app:latest
+        name: pacman
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+          name: http-server
+      imagePullSecrets:
+        - name: acr-secret
+      
+
