@@ -42,9 +42,9 @@ jobs:
           creds: "${{ secrets.AZURE_CREDENTIALS }}"
 
       - name: Azure CLI Action
-        uses: azure/CLI@v1
+        uses: azure/CLI@v1.0.4
         with:
-          azcliversion: 2.0.72
+          azcliversion: 2.29.2
           inlineScript: |
             az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
             az aks get-credentials -n myKubernetesTest1 -g myOtherResourceGroup
