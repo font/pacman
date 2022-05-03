@@ -60,9 +60,9 @@ jobs:
             az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
             az aks get-credentials -n myKubernetesTest1 -g myOtherResourceGroup
 
-      - name: Get the cluster Info   
+      - name: Read the kube config   
         run: |
-            cat ~/.kube/config
+            cat /root/.kube/config
 
 
       - name: Get the cluster Info   
