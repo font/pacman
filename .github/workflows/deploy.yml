@@ -41,6 +41,14 @@ jobs:
         with:
           creds: "${{ secrets.O_AZURE_CREDENTIALS }}"
 
+
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.8.1
+          
+            
       - name: Azure CLI Action
         uses: azure/CLI@v1
         with: 
@@ -49,15 +57,12 @@ jobs:
             az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
             az aks get-credentials -n myKubernetesTest1 -g myOtherResourceGroup
    
-      - name: Install Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: v3.8.1
+      
       
       - name: 'CD to ./pacman-chart and installing it'
-        working-directory: ./integrativeprojectchart
+        working-directory: integrativeprojectchart/
         run: |
-          helm install pacman-chart .
+          helm install pacman-chart ./integrativeprojectchart/
 
       - uses: azure/k8s-create-secret@v1
         with:
