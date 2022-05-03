@@ -52,18 +52,24 @@ jobs:
         id: install
 
 
-      - name: Azure CLI Action
-        uses: azure/CLI@v1
-        with: 
-          azcliversion: latest
-          inlineScript: |
-            az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
-            az aks get-credentials -n myKubernetesTest1 -g myOtherResourceGroup
+      # - name: Azure CLI Action
+      #   uses: azure/CLI@v1
+      #   with: 
+      #     azcliversion: latest
+      #     inlineScript: |
+      #       az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
+      #       az aks get-credentials -n myKubernetesTest1 -g myOtherResourceGroup
+      - name: Adding the kubernetes context
+        uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.O_AZURE_CREDENTIALS }}'
+          cluster-name: myKubernetesTest1
+          resource-group: myOtherResourceGroup
 
-      - name: Read the kube config   
-        run: |
-            sudo cat /root/.kube/config
-            sudo export KUBECONFIG=/root/.kube/config
+      # - name: Read the kube config   
+      #   run: |
+      #       sudo cat /root/.kube/config
+      #       sudo export KUBECONFIG=/root/.kube/config
 
 
       - name: Get the cluster Info   
