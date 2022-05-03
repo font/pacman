@@ -45,7 +45,9 @@ jobs:
         uses: azure/CLI@v1
         with:
           azcliversion: 2.0.72
-          inlineScript: az aks get-credentials -n myKubernetesTest1 -g myOtherResourceGroup
+          inlineScript: |
+            az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
+            az aks get-credentials -n myKubernetesTest1 -g myOtherResourceGroup
    
       - name: Install Helm
         uses: azure/setup-helm@v1
