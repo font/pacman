@@ -41,9 +41,10 @@ jobs:
         id: install
       
       - name: Adding the kubernetes context
-        run: |	
-          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION}}
-          az aks get-credentials --resource-group myOtherResourceGroup --name myKubernetesTest1
+        uses: azure/aks-set-context@v1
+        with:
+          cluster-name: myKubernetesTest1
+          resource-group: myOtherResourceGroup
 
       - name: 'CD to ./pacman-chart and installing it'
         working-directory: integrativeprojectchart/charts
