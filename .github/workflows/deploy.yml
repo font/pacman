@@ -1,4 +1,4 @@
-name: 'Deploy to Kubernetes'
+name: 'Deploy Helm chart to Kubernetes cluster'
 
 on:
 
@@ -6,8 +6,8 @@ on:
 
 jobs:
 
-  deployImage:
-    name: 'Update image on deployment'
+  deployHelmChart:
+    name: 'deploy Helm chart on the Kubernetes Cluster'
     env:
       K8_DOCKER_REGISTRY_SERVER: ${{ secrets.K8_DOCKER_REGISTRY_SERVER }}
       K8_CONTAINER_NAME: ${{ secrets.K8_CONTAINER_NAME }}
@@ -26,56 +26,25 @@ jobs:
       
       - name: Checkout
         uses: actions/checkout@v3
-      
-      - name: Install Azure cli
-        run: |
-          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
-          curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-          AZ_REPO=$(lsb_release -cs)
-          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-          sudo apt-get update
-          sudo apt-get install azure-cli
 
-      - name: Azure Login
-        uses: Azure/login@v1
-        with:
-          creds: "${{ secrets.O_AZURE_CREDENTIALS }}"
+      - name: Login to Azure CLI
+        run: |	
+          az login -u ${{ secrets.AZURE_LOGIN_USERNAME }} -p ${{ secrets.AZURE_SECRET_PASSWORD }}
 
-
-      - name: Install Helm
+      - name: Installing Helm
         uses: azure/setup-helm@v1
         with:
           version: v3.8.1
 
-      - name: Installing kubectl  
+      - name: Installing Kbectl CLI  
         uses: azure/setup-kubectl@v2.0
         id: install
-
-
-      # - name: Azure CLI Action
-      #   uses: azure/CLI@v1
-      #   with: 
-      #     azcliversion: latest
-      #     inlineScript: |
-      #       az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
-      #       az aks get-credentials -n myKubernetesTest1 -g myOtherResourceGroup
-      - name: Adding the kubernetes context
-        uses: azure/aks-set-context@v1
-        with:
-          creds: '${{ secrets.O_AZURE_CREDENTIALS }}'
-          cluster-name: myKubernetesTest1
-          resource-group: myOtherResourceGroup
-
-      # - name: Read the kube config   
-      #   run: |
-      #       sudo cat /root/.kube/config
-      #       sudo export KUBECONFIG=/root/.kube/config
-
-
-      - name: Get the cluster Info   
-        run: |
-            kubectl cluster-info
       
+      - name: Adding the kubernetes context
+        run: |	
+          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION}}
+          az aks get-credentials --resource-group myOtherResourceGroup --name myKubernetesTest1
+
       - name: 'CD to ./pacman-chart and installing it'
         working-directory: integrativeprojectchart/charts
         run: |
@@ -89,9 +58,7 @@ jobs:
           container-registry-password: ${{ secrets.K8_PASSWORD }}
           secret-name: acr-secret
           namespace: pacman-namespace
-      
-      - name: Rolling restar deployment deployment.apps/pacman
-        if: always()
+
+      - name: Rolling restart deployment deployment.apps/pacman
         run: |
           kubectl rollout restart deployment.apps/pacman -n pacman-namespace
-     
