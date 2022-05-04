@@ -39,12 +39,12 @@ jobs:
       - name: Installing Kbectl CLI  
         uses: azure/setup-kubectl@v2.0
         id: install
-      
-      - name: Adding the kubernetes context
-        uses: azure/aks-set-context@v1
+
+      - uses: azure/aks-set-context@v2.0
         with:
-          cluster-name: myKubernetesTest1
           resource-group: myOtherResourceGroup
+          cluster-name: myKubernetesTest1
+
 
       - name: 'CD to ./pacman-chart and installing it'
         working-directory: integrativeprojectchart/charts
