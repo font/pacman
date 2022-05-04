@@ -40,15 +40,11 @@ jobs:
         uses: azure/setup-kubectl@v2.0
         id: install
 
-
-      - name: Login to Azure CLI
-        run: |	
-          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION}}
-          az aks get-credentials --resource-group myOtherResourceGroup --name myKubernetesTest1
-      
-      - name: Uninstalling helm chart
-        run: |
-          helm uninstall pacman-chart
+      - name: Set aks context
+        uses: azure/aks-set-context@v2.0
+        with:
+          resource-group: myOtherResourceGroup
+          cluster-name: myKubernetesTest1
 
       - name: Rolling restar deployment deployment.apps/pacman
         run: |
