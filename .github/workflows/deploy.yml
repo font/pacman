@@ -40,7 +40,8 @@ jobs:
         uses: azure/setup-kubectl@v2.0
         id: install
 
-      - uses: azure/aks-set-context@v2.0
+      - name: Set aks context
+        uses: azure/aks-set-context@v2.0
         with:
           resource-group: myOtherResourceGroup
           cluster-name: myKubernetesTest1
