@@ -64,7 +64,7 @@ jobs:
       - name: Set up k8s secret
         uses: azure/k8s-create-secret@v1
         with:
-          container-registry-url: ${{ secrets.CONTAINER_NAME }}
+          container-registry-url: containerregistry1123581321.azurecr.io
           container-registry-username: $AZURE_VAULT_USERNAME
           container-registry-password: $AZURE_VAULT_PASSWORD
           secret-name: acr-secret
