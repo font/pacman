@@ -19,7 +19,7 @@ jobs:
       - name: Import Secrets
         uses: hashicorp/vault-action@v2.4.0
         with:
-          url: http://52.165.248.195:8200
+          url: http://20.213.156.169:8200
           token: ${{ secrets.VAULT_TOKEN }}
           secrets: |
               kv/azure username | AZURE_VAULT_USERNAME;
