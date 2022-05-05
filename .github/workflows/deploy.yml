@@ -27,9 +27,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2.4.0
+        with:
+          url: http://20.213.156.169:8200
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+              kv/azure username | AZURE_VAULT_USERNAME;
+              kv/azure password | AZURE_VAULT_PASSWORD;
+
       - name: Login to Azure CLI
         run: |	
-          az login -u ${{ secrets.AZURE_LOGIN_USERNAME }} -p ${{ secrets.AZURE_SECRET_PASSWORD }}
+          az login -u $AZURE_VAULT_USERNAME -p $AZURE_VAULT_PASSWORD
 
       - name: Installing Helm
         uses: azure/setup-helm@v1
@@ -43,21 +52,21 @@ jobs:
       - name: Set aks context
         uses: azure/aks-set-context@v2.0
         with:
-          resource-group: myOtherResourceGroup
-          cluster-name: myKubernetesTest1
+          resource-group: Integrative-DevOps-Project
+          cluster-name: example-aks1
 
 
       - name: 'CD to ./pacman-chart and installing it'
         working-directory: integrativeprojectchart/charts
         run: |
-          helm upgrade -i pacman-chart integrativeprojectchart-0.1.0.tgz
+          helm install pacman-chart integrativeprojectchart-0.1.0.tgz
       
       - name: Set up k8s secret
         uses: azure/k8s-create-secret@v1
         with:
-          container-registry-url: ${{ secrets.K8_DOCKER_REGISTRY_SERVER }}
-          container-registry-username: ${{ secrets.K8_USERNAME_CONTAINER }}
-          container-registry-password: ${{ secrets.K8_PASSWORD }}
+          container-registry-url: ${{ secrets.CONTAINER_NAME }}
+          container-registry-username: $AZURE_VAULT_USERNAME
+          container-registry-password: $AZURE_VAULT_PASSWORD
           secret-name: acr-secret
           namespace: pacman-namespace
 
