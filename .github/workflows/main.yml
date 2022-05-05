@@ -23,10 +23,11 @@ jobs:
           token: ${{ secrets.VAULT_TOKEN }}
           secrets: |
               kv/azure username | AZURE_VAULT_USERNAME;
+              kv/azure password | AZURE_VAULT_PASSWORD;
 
       - name: "Login to Azure CLI and Azure Container Registry"
         run: |	
-          az login -u $AZURE_VAULT_USERNAME -p ${{ secrets.AZURE_SECRET_PASSWORD }}
+          az login -u $AZURE_VAULT_USERNAME -p $AZURE_VAULT_PASSWORD 
           az acr login --name ${{ secrets.CONTAINER_NAME }}
 
       - name: 'Build and push docker image to azure registry'
