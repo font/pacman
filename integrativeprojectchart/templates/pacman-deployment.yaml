@@ -16,7 +16,7 @@ spec:
         name: pacman
     spec:
       containers:
-      - image: othercontainerregistry.azurecr.io/jesus/pacman-nodejs-app:latest
+      - image: containerregistry1123581321.azurecr.io/jesus/pacman-nodejs-app:latest
         name: pacman
         imagePullPolicy: Always
         resources:
