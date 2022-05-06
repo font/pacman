@@ -16,4 +16,4 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 2 # %
+        averageUtilization: 50 # %
