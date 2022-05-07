@@ -28,8 +28,8 @@ jobs:
           secrets: |
               kv/azure username | AZURE_VAULT_USERNAME;
               kv/azure password | AZURE_VAULT_PASSWORD;
-              kv/azure_container | AZURE_VAULT_CONTAINER_USERNAME;
-              kv/azure_container | AZURE_VAULT_CONTAINER_PASSWORD;
+              kv/azure_container username | AZURE_VAULT_CONTAINER_USERNAME;
+              kv/azure_container password | AZURE_VAULT_CONTAINER_PASSWORD;
 
       - name: Login to Azure CLI
         run: |	
