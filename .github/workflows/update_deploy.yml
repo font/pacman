@@ -1,4 +1,4 @@
-name: 'Update Kubernetes deployment'
+name: 'Update deployment'
 
 on:
 
