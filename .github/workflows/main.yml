@@ -1,4 +1,4 @@
-name: 'Login to azure container registry'
+name: 'Push Image ACR'
 
 on:
 
@@ -25,12 +25,12 @@ jobs:
               kv/azure username | AZURE_VAULT_USERNAME;
               kv/azure password | AZURE_VAULT_PASSWORD;
 
-      - name: "Login to Azure CLI and Azure Container Registry"
+      - name: Login to Azure CLI and Azure Container Registry
         run: |	
           az login -u $AZURE_VAULT_USERNAME -p $AZURE_VAULT_PASSWORD 
           az acr login --name ${{ secrets.CONTAINER_NAME }}
 
-      - name: 'Build and push docker image to azure registry'
+      - name: Build and push docker image to azure registry
         working-directory: ./docker
         run: |
             docker build . -t ${{ secrets.CONTAINER_NAME }}/jesus/pacman-nodejs-app:latest
