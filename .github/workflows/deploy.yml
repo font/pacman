@@ -1,4 +1,4 @@
-name: 'Deploy Helm chart to Kubernetes cluster'
+name: 'Deploy'
 
 on:
 
@@ -7,7 +7,7 @@ on:
 jobs:
 
   deployHelmChart:
-    name: 'deploy Helm chart on the Kubernetes Cluster'
+    name: Deploy Helm chart to Kubernetes Cluster
     runs-on: ubuntu-latest
     environment: Test
     
@@ -45,7 +45,7 @@ jobs:
         run: |
           kubectl create namespace pacman-namespace
 
-      - name: Create a new namespace named pacman-namespace
+      - name: Create docker-registry secret for K8s
         run: |
           kubectl create secret docker-registry acr-secret \
           --namespace pacman-namespace \
@@ -53,7 +53,7 @@ jobs:
           --docker-username=$AZURE_VAULT_CONTAINER_USERNAME \
           --docker-password=$AZURE_VAULT_CONTAINER_PASSWORD
 
-      - name: 'CD to ./pacman-chart and installing it'
+      - name: Installing integrativeprojectchart
         working-directory: integrativeprojectchart/charts
         run: |
           helm install pacman-chart integrativeprojectchart-0.1.0.tgz --namespace pacman-namespace
