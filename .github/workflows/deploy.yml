@@ -50,21 +50,21 @@ jobs:
           resource-group: Integrative-DevOps-Project
           cluster-name: example-aks1
 
-
-      - name: 'CD to ./pacman-chart and installing it'
-        working-directory: integrativeprojectchart/charts
+      - name: Create a new namespace named pacman-namespace
         run: |
-          helm upgrade -i pacman-chart integrativeprojectchart-0.1.0.tgz
-      
+          kubectl create namespace pacman-namespace
+
       - name: Set up k8s secret
         uses: azure/k8s-create-secret@v1
-        with:
+        with:                     
           container-registry-url: containerregistry1123581321.azurecr.io
           container-registry-username: $AZURE_VAULT_CONTAINER_USERNAME
           container-registry-password: $AZURE_VAULT_CONTAINER_PASSWORD 
           secret-name: acr-secret
           namespace: pacman-namespace
 
-      - name: Rolling restart deployment deployment.apps/pacman
+      - name: 'CD to ./pacman-chart and installing it'
+        working-directory: integrativeprojectchart/charts
         run: |
-          kubectl rollout restart deployment.apps/pacman -n pacman-namespace
+          helm install pacman-chart integrativeprojectchart-0.1.0.tgz
+
