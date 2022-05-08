@@ -18,15 +18,6 @@ jobs:
       
       - name: Checkout
         uses: actions/checkout@v3
-      
-      - name: Install Azure cli
-        run: |
-          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
-          curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-          AZ_REPO=$(lsb_release -cs)
-          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-          sudo apt-get update
-          sudo apt-get install azure-cli
 
       - name: Import Secrets
         uses: hashicorp/vault-action@v2.4.0
@@ -36,7 +27,6 @@ jobs:
           secrets: |
               kv/azure username | AZURE_VAULT_USERNAME;
               kv/azure password | AZURE_VAULT_PASSWORD;
-
 
       - name: "Login to Azure CLI"
         run: |	
@@ -61,4 +51,8 @@ jobs:
 
       - name: 'Uninstalling helm chart'
         run: |
-          helm uninstall pacman-chart
+          helm uninstall pacman-chart --namespace pacman-namespace
+
+      - name: 'Delete pacman-namespace'
+        run: |
+          kubectl delete namespace pacman-namespace
