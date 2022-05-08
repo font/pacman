@@ -66,5 +66,5 @@ jobs:
       - name: 'CD to ./pacman-chart and installing it'
         working-directory: integrativeprojectchart/charts
         run: |
-          helm install pacman-chart integrativeprojectchart-0.1.0.tgz
+          helm install pacman-chart integrativeprojectchart-0.1.0.tgz --namespace pacman-namespace
 
