@@ -35,15 +35,6 @@ jobs:
         run: |	
           az login -u $AZURE_VAULT_USERNAME -p $AZURE_VAULT_PASSWORD
 
-      - name: Installing Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: v3.8.1
-
-      - name: Installing Kbectl CLI  
-        uses: azure/setup-kubectl@v2.0
-        id: install
-
       - name: Set aks context
         uses: azure/aks-set-context@v2.0
         with:
@@ -61,16 +52,6 @@ jobs:
           --docker-server=containerregistry1123581321.azurecr.io \
           --docker-username=$AZURE_VAULT_CONTAINER_USERNAME \
           --docker-password=$AZURE_VAULT_CONTAINER_PASSWORD
-    
-
-      # - name: Set up k8s secret
-      #   uses: azure/k8s-create-secret@v1
-      #   with:                     
-      #     container-registry-url: containerregistry1123581321.azurecr.io
-      #     container-registry-username: $AZURE_VAULT_CONTAINER_USERNAME
-      #     container-registry-password: $AZURE_VAULT_CONTAINER_PASSWORD 
-      #     secret-name: acr-secret
-      #     namespace: pacman-namespace
 
       - name: 'CD to ./pacman-chart and installing it'
         working-directory: integrativeprojectchart/charts
