@@ -56,7 +56,7 @@ jobs:
 
       - name: Create a new namespace named pacman-namespace
         run: |
-          kubectl create secret docker-registry acr-secret \                                                                                      kube example-aks1
+          kubectl create secret docker-registry acr-secret \
           --namespace pacman-namespace \
           --docker-server=containerregistry1123581321.azurecr.io \
           --docker-username=$AZURE_VAULT_CONTAINER_USERNAME \
