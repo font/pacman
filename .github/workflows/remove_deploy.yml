@@ -1,4 +1,4 @@
-name: 'Remove Kubernetes deployment'
+name: 'Remove deploy'
 
 on:
 
@@ -31,16 +31,6 @@ jobs:
       - name: "Login to Azure CLI"
         run: |	
           az login -u $AZURE_VAULT_USERNAME -p $AZURE_VAULT_PASSWORD
-
-      - name: Install Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: v3.8.1
-
-      - name: Install Kubectl CLI  
-        uses: azure/setup-kubectl@v2.0
-        id: install
-
 
       - name: Set aks context
         uses: azure/aks-set-context@v2.0
