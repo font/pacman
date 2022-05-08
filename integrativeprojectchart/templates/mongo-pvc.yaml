@@ -1,7 +1,6 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  namespace: pacman-namespace
   name: mongo-storage
 spec:
   accessModes:

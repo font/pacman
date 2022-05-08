@@ -1,7 +1,6 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  namespace: pacman-namespace
   name: pacman 
 spec:
   scaleTargetRef:
