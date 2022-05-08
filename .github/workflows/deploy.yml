@@ -54,17 +54,26 @@ jobs:
         run: |
           kubectl create namespace pacman-namespace
 
-      - name: Set up k8s secret
-        uses: azure/k8s-create-secret@v1
-        with:                     
-          container-registry-url: containerregistry1123581321.azurecr.io
-          container-registry-username: $AZURE_VAULT_CONTAINER_USERNAME
-          container-registry-password: $AZURE_VAULT_CONTAINER_PASSWORD 
-          secret-name: acr-secret
-          namespace: pacman-namespace
-
-      - name: 'CD to ./pacman-chart and installing it'
-        working-directory: integrativeprojectchart/charts
+      - name: Create a new namespace named pacman-namespace
         run: |
-          helm install pacman-chart integrativeprojectchart-0.1.0.tgz --namespace pacman-namespace
+          kubectl create secret docker-registry acr-secret \                                                                                      kube example-aks1
+          --namespace pacman-namespace \
+          --docker-server=containerregistry1123581321.azurecr.io \
+          --docker-username=$AZURE_VAULT_CONTAINER_USERNAME \
+          --docker-password=$AZURE_VAULT_CONTAINER_PASSWORD
+    
+
+      # - name: Set up k8s secret
+      #   uses: azure/k8s-create-secret@v1
+      #   with:                     
+      #     container-registry-url: containerregistry1123581321.azurecr.io
+      #     container-registry-username: $AZURE_VAULT_CONTAINER_USERNAME
+      #     container-registry-password: $AZURE_VAULT_CONTAINER_PASSWORD 
+      #     secret-name: acr-secret
+      #     namespace: pacman-namespace
+
+      # - name: 'CD to ./pacman-chart and installing it'
+      #   working-directory: integrativeprojectchart/charts
+      #   run: |
+      #     helm install pacman-chart integrativeprojectchart-0.1.0.tgz --namespace pacman-namespace
 
