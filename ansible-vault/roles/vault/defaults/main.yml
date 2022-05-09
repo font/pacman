@@ -1,0 +1,5 @@
+---
+# defaults file for roles/vault
+vault_version: "1.10.2"
+vault_install_prerequisites: ['unzip','jq']
+vault_config_path: "/etc/config.hcl"

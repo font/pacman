@@ -1,0 +1,60 @@
+name: 'Deploy'
+
+on:
+
+  workflow_dispatch:
+
+jobs:
+
+  deployHelmChart:
+    name: Deploy Helm chart to Kubernetes Cluster
+    runs-on: ubuntu-latest
+    environment: Test
+    
+    defaults:
+      run:
+        shell: bash
+      
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2.4.0
+        with:
+          url: ${{ secrets.VAULT_IP }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+              kv/azure username | AZURE_VAULT_USERNAME;
+              kv/azure password | AZURE_VAULT_PASSWORD;
+              kv/azure_container username | AZURE_VAULT_CONTAINER_USERNAME;
+              kv/azure_container password | AZURE_VAULT_CONTAINER_PASSWORD;
+
+      - name: Login to Azure CLI
+        run: |	
+          az login -u $AZURE_VAULT_USERNAME -p $AZURE_VAULT_PASSWORD
+
+      - name: Set aks context
+        uses: azure/aks-set-context@v2.0
+        with:
+          resource-group: Integrative-DevOps-Project
+          cluster-name: example-aks1
+
+      - name: Create a new namespace named pacman-namespace
+        run: |
+          kubectl create namespace pacman-namespace
+
+      - name: Create docker-registry secret for K8s
+        run: |
+          kubectl create secret docker-registry acr-secret \
+          --namespace pacman-namespace \
+          --docker-server=containerregistry1123581321.azurecr.io \
+          --docker-username=$AZURE_VAULT_CONTAINER_USERNAME \
+          --docker-password=$AZURE_VAULT_CONTAINER_PASSWORD
+
+      - name: Installing integrativeprojectchart
+        working-directory: integrativeprojectchart/charts
+        run: |
+          helm install pacman-chart integrativeprojectchart-0.1.0.tgz --namespace pacman-namespace
+

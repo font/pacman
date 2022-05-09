@@ -1,0 +1,37 @@
+name: 'Push Image ACR'
+
+on:
+
+  workflow_dispatch:
+
+jobs:
+  ContainerRegistry:
+    runs-on: ubuntu-latest    
+    defaults:
+      run:
+        shell: bash
+      
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2.4.0
+        with:
+          url: ${{ secrets.VAULT_IP }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+              kv/azure username | AZURE_VAULT_USERNAME;
+              kv/azure password | AZURE_VAULT_PASSWORD;
+
+      - name: Login to Azure CLI and Azure Container Registry
+        run: |	
+          az login -u $AZURE_VAULT_USERNAME -p $AZURE_VAULT_PASSWORD 
+          az acr login --name ${{ secrets.CONTAINER_NAME }}
+
+      - name: Build and push docker image to azure registry
+        working-directory: ./docker
+        run: |
+            docker build . -t ${{ secrets.CONTAINER_NAME }}/jesus/pacman-nodejs-app:latest
+            docker push ${{ secrets.CONTAINER_NAME }}/jesus/pacman-nodejs-app:latest

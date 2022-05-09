@@ -1,0 +1,45 @@
+name: 'Update deployment'
+
+on:
+
+  workflow_dispatch:
+
+jobs:
+
+  restartDeployment:
+    name: 'Update the the image from the replicas'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+      
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2.4.0
+        with:
+          url: ${{ secrets.VAULT_IP }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+              kv/azure username | AZURE_VAULT_USERNAME;
+              kv/azure password | AZURE_VAULT_PASSWORD;
+
+      - name: "Login to Azure CLI"
+        run: |	
+          az login -u $AZURE_VAULT_USERNAME -p $AZURE_VAULT_PASSWORD    
+
+
+      - name: Set aks context
+        uses: azure/aks-set-context@v2.0
+        with:
+          resource-group: Integrative-DevOps-Project
+          cluster-name: example-aks1
+
+      - name: Rolling restart deployment deployment.apps/pacman
+        run: |
+          kubectl rollout restart deployment.apps/pacman -n pacman-namespace
