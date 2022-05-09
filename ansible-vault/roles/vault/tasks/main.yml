@@ -1,0 +1,39 @@
+---
+- name: Install prerequisites
+  package:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items: "{{ vault_install_prerequisites }}"
+  become: true
+
+- name: Download binary
+  get_url:
+    url: https://releases.hashicorp.com/vault/{{vault_version}}/vault_{{vault_version}}_linux_amd64.zip
+    dest: /tmp/vault_{{vault_version}}_linux_amd64.zip
+  register: vault_download
+
+- name: "Unzip vault archive"
+  unarchive:
+    src: "{{ vault_download.dest }}"
+    dest: /usr/bin
+    copy: no
+
+- name: Copy systemd init file
+  template:
+    src: templates/init.service.j2
+    dest: /etc/systemd/system/vault.service
+  notify: systemd_reload
+
+- name: config file
+  template:
+    src: templates/config.hcl.j2
+    dest: "{{ vault_config_path }}"
+
+- name: vault service
+  systemd:
+    name: vault
+    state: started
+    daemon_reload: yes
+  become: true
+- pause: 
+    seconds: 15

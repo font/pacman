@@ -1,0 +1,15 @@
+---
+# tasks file for roles/vault-unseal
+- name: Reading unseal key contents
+  command: cat {{item}}
+  register: unseal_keys
+  with_fileglob: "{{ unseal_keys_dir_output }}/*"
+  delegate_to: localhost
+  become: false
+
+- name: Unseal vault with unseal keys
+  shell: |
+    vault operator unseal {{ item.stdout }}
+  environment:
+    VAULT_ADDR: "{{ vault_addr }}"
+  with_items: "{{unseal_keys.results}}"

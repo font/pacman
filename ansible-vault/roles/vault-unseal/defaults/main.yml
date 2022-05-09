@@ -1,0 +1,4 @@
+---
+# defaults file for roles/vault-unseal
+unseal_keys_dir_output: "{{ playbook_dir }}/unsealKey/"
+vault_addr: 'http://0.0.0.0:8200'
