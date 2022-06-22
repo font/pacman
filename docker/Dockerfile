@@ -1,16 +1,14 @@
-FROM node:boron
+FROM registry.access.redhat.com/ubi8/nodejs-16
 
-MAINTAINER Ivan Font <ifont@redhat.com>
-
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+MAINTAINER Rodrigo Alvares  <ralvares@redhat.com>
 
 # Clone game source code
-RUN git clone https://github.com/font/pacman.git .
+RUN git clone https://github.com/ralvares/pacman.git
 
 # Install app dependencies
-RUN npm install
+WORKDIR /opt/app-root/src/pacman
+
+RUN ls && npm install
 
 # Expose port 8080
 EXPOSE 8080
