@@ -1,6 +1,6 @@
 {
   "name": "pacman",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Pac-Man Node.js Game",
   "author": "Ivan Font <ivan@ivanfont.com>",
   "main": "bin/server.js",
@@ -10,12 +10,12 @@
   },
   "license": "GPLv3",
   "dependencies": {
-    "body-parser": "^1.17.1",
-    "express": "^4.14.1",
-    "jade": "^1.11.0",
-    "mongodb": "^2.2.24"
+    "body-parser": "latest",
+    "express": "latest",
+    "pug": "latest",
+    "mongodb": "latest"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "nodemon": "latest"
   }
 }
