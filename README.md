@@ -59,3 +59,7 @@ podman build -t pacman:latest .
 podman tag localhost/pacman:latest quay.io/dbewley/pacman:latest
 podman push quay.io/dbewley/pacman:latest
 ```
+
+## Deploy
+
+See https://github.com/dlbewley/demo-pacman/blob/demo/overlays/openshift/kustomization.yaml
