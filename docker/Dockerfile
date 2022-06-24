@@ -2,7 +2,7 @@ FROM registry.access.redhat.com/ubi8/nodejs-16
 
 MAINTAINER Rodrigo Alvares  <ralvares@redhat.com>
 USER root 
-RUN yum update && yum upgrade -y 
+RUN dnf update -y && dnf upgrade -y 
 
 USER 1001
 # Clone game source code
