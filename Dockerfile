@@ -4,7 +4,7 @@ MAINTAINER Rodrigo Alvares  <ralvares@redhat.com>
 USER root 
 RUN microdnf update -y && microdnf upgrade -y && \
     microdnf module enable nodejs:16 && microdnf install nodejs && \
-    mkdir -p /opt/app-root/src/pacman \
+    mkdir -p /opt/app-root/src/pacman && \
     rpm -e --nodeps $(rpm -qa '*rpm*' '*dnf*' '*libsolv*' '*hawkey*' 'yum*' 'curl' )
 
 COPY . /opt/app-root/src/pacman
