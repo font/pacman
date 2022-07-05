@@ -15,7 +15,7 @@ spec:
         name: pacman
     spec:
       containers:
-      - image: quay.io/ralvares/pacman@sha256:d628bd2c4a59f1441df84a4e4a3b0c02fcbe1d064e4b26d8337e830664072637
+      - image: quay.io/ralvares/pacman:ubi8-minimal
         name: pacman
         ports:
         - containerPort: 8080
