@@ -13,6 +13,8 @@
     "body-parser": "^1.20.0",
     "express": "^4.14.1",
     "pug": "^3.0.2",
-    "mongodb": "^4.7.0"
+    "mongodb": "^4.7.0",
+    "glob-parent": "5.1.2",
+    "bson":"1.1.4"
   }
 }
