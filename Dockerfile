@@ -1,4 +1,5 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+ARG MY_BASE_IMAGE=registry.access.redhat.com/ubi8/ubi-minimal
+FROM $MY_BASE_IMAGE
 
 MAINTAINER Rodrigo Alvares  <ralvares@redhat.com>
 USER root 
