@@ -10,20 +10,8 @@ pacman:
     tag: latest
     pullPolicy: Always
 
-mongo:
-  storage: 1Gi
-  # Use plain text data, helm will encode in base64
-  databaseName: 'pacman'
-  databasePassword: ''
-  databaseUser: ''
-  # FIXME: Add support for this
-  # deploymentType: 'deployment' # or: 'statefulset'
-  image:
-    registry: ghcr.io
-    repository: shuguet
-    image: mongo
-    tag: latest
-    pullPolicy: Always
+mongodb:
+  enabled: true
 
 ## Service configuration.
 service:
@@ -68,12 +56,6 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
-
-rbac:
-  create: true
-
-psp:
-  create: false # Deprecated in 1.21+, unavailable in 1.25+
 
 autoscaling:
   enabled: false
