@@ -16,3 +16,9 @@ maintainers:
     url: https://vzilla.co.uk/
   - name: Sylvain Huguet
     url: https://www.huguet.me
+
+dependencies:
+- name: mongodb
+  version: 13.6.7
+  repository: https://charts.bitnami.com/bitnami
+  condition: mongodb.enabled

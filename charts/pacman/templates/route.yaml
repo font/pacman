@@ -19,7 +19,7 @@ spec:
   host: {{ $route.host }}
   path: /{{ include "app.urlPath" . | trimPrefix "/" | trimSuffix "/" }}
   port:
-    targetPort: {{ $service_port }}
+    targetPort: http
   to:
     kind: Service
     name: {{ include "pacman.fullname" . }}
