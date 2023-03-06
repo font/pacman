@@ -28,10 +28,14 @@ helm install pacman pacman/pacman -n pacman --create-namespace \
     --set service.type=LoadBalancer
 ```
 
-Route (Requires an OpenShift installation. Adapt the class/host to your environment):
+For Openshift use a route and remove the security context otherwise the 
+mongodb securityContext will be created with the user 1001 which is not allowed 
+by default in Openshift.
 ```
 helm install pacman pacman/pacman -n pacman --create-namespace \
-    --set route.create=true
+    --set route.create= \
+    --set mongodb.containerSecurityContext.enabled=false \
+    --set mongodb.podSecurityContext.enabled=false
 ```
 
 ## Other installation options:
