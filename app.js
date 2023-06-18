@@ -1,4 +1,12 @@
 'use strict';
+// Initiating NodeJS instrumentation
+const tracer = require('signalfx-tracing').init({
+
+  service: 'pacman-christhianb',
+  url: 'https://ingest.us0.signalfx.com', 
+  accessToken: 'k9HGA_tCfVk1xNK0fONvGg',
+  tags: {environment: 'christhianb'}
+})
 
 var express = require('express');
 var path = require('path');
