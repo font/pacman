@@ -14,7 +14,7 @@
     "body-parser": "^1.17.1",
     "express": "^4.14.1",
     "pug": "^3.0.2",
-    "mongodb": "^4.4.1"
+    "mongodb": "^4.17.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"

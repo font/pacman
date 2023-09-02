@@ -11,7 +11,7 @@ COPY package*.json ./
 
 # Install app dependencies
 # Development
-# RUN npm install
+RUN npm install
 # Production
 RUN npm ci --only=production
 
