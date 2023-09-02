@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pacman.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pacman.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "pacman.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "pacman.selectorLabels" . | nindent 8 }}
+        name: pacman
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          # image: "ghcr.io/shuguet/pacman:master"
+          image: {{ default .Chart.AppVersion .Values.pacman.image.tag | print .Values.pacman.image.registry "/" .Values.pacman.image.repository "/" .Values.pacman.image.image ":"  }}
+          imagePullPolicy: {{ .Values.pacman.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          startupProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            failureThreshold: 1
+            periodSeconds: 10
+          readinessProbe:
+            initialDelaySeconds: 5
+            httpGet:
+              path: /
+              port: 8080
+          env:
+            - name: MONGO_SERVICE_HOST
+              value: {{ .Release.Name }}-mongodb
+            - name: MONGO_AUTH_USER
+              value: root
+            - name: MONGO_AUTH_PWD
+              valueFrom:
+                secretKeyRef:
+                  key: mongodb-root-password
+                  name: {{ .Release.Name }}-mongodb
+            - name: MONGO_DATABASE
+              value: pacman
+            - name: MY_MONGO_PORT
+              value: "27017" 
+            - name: MONGO_USE_SSL
+              value: "false"
+            - name: MONGO_VALIDATE_SSL
+              value: "false"
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName

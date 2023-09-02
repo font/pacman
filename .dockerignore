@@ -1,2 +1,12 @@
+.dockerignore
+Dockerfile
+.github
+.devcontainer
+.git
+.gitignore
+README.md
+SECURITY.md
+scripts
+charts
 node_modules
 npm-debug.log

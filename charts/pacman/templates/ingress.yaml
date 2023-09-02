@@ -1,0 +1,42 @@
+{{- $ingressApiIsStable := eq (include "ingress.isStable" .) "true" -}}
+{{- $service_port := .Values.service.port -}}
+{{ if .Values.ingress.create }}
+apiVersion: {{ template "ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-ingress
+  labels:
+{{ include "pacman.labels" . | indent 4 }}
+  annotations:
+{{ include "ingressClassAnnotation" . | indent 4 }}
+    kubernetes.io/ingress.global-static-ip-name: pacman-ingress
+    {{- if .Values.ingress.annotations }}
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+    {{- end }}
+spec:
+{{- if .Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ required "ingress.host value is required for TLS configuration" .Values.ingress.host }}
+    secretName: {{ required "ingress.tls.secretName is required for TLS configuration" .Values.ingress.tls.secretName }}
+{{- end }}
+  rules:
+  - http:
+      paths:
+        - path: /{{ include "app.urlPath" . | trimPrefix "/" | trimSuffix "/" }}
+          pathType: {{ default "ImplementationSpecific" .Values.ingress.pathType }}
+          backend:
+            {{- if $ingressApiIsStable }}
+            service:
+              name: pacman
+              port:
+                number: {{ $service_port }}
+            {{- else }}
+            serviceName: pacman
+            servicePort: {{ $service_port }}
+            {{- end }}
+    {{- if .Values.ingress.host }}
+    host: {{ .Values.ingress.host }}
+    {{- end }}
+{{ end }}
