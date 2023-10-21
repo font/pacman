@@ -54,9 +54,12 @@ docker push <registry>/<user>/pacman-nodejs-app
 ### Building using an s2i image
 
 ```
-s2i build . ubi8/nodejs-16-minimal pacman --as-dockerfile Dockerfile
-podman build -t pacman:latest .
-podman tag localhost/pacman:latest quay.io/dbewley/pacman:latest
+s2i build . registry.redhat.io/ubi8/nodejs-16-minimal pacman --as-dockerfile Dockerfile
+podman build -t pacman:$(date +%Y%m) .
+podman tag localhost/pacman:$(date +%Y%m) quay.io/dbewley/pacman:$(date +%Y%m)
+podman push quay.io/dbewley/pacman:$(date +%Y%m)
+
+podman tag localhost/pacman:$(date +%Y%m) quay.io/dbewley/pacman:latest
 podman push quay.io/dbewley/pacman:latest
 ```
 
